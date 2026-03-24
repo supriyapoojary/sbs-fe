@@ -1,0 +1,170 @@
+@use "../../../../styles/mixins" as *;
+
+// ── Backdrop — full screen overlay ────────────────────────────────────
+.cancel-dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+// ── Dialog card ───────────────────────────────────────────────────────
+.cancel-dialog {
+    background: var(--bg);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 380px;
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    animation: fadeIn 0.2s ease;
+
+    &__progress {
+        height: 3px;
+        background: var(--border);
+        border-radius: 99px;
+        margin-bottom: 20px;
+    }
+
+    &__progress-bar {
+        height: 100%;
+        width: 40%;
+        background: var(--brand);
+        border-radius: 99px;
+    }
+
+    &__title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+    }
+
+    &__subtitle {
+        font-size: 13px;
+        color: var(--text-sub);
+        margin-bottom: 20px;
+    }
+
+    &__options {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 24px;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 10px;
+
+        // Both buttons share equal width
+        .btn-secondary,
+        .btn-primary {
+            flex: 1;
+        }
+    }
+}
+
+// ── Cancel option row ─────────────────────────────────────────────────
+.cancel-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition:
+        background 0.1s,
+        border-color 0.1s;
+
+    &:hover {
+        background: var(--bg-subtle);
+    }
+
+    &--selected {
+        border-color: var(--brand);
+        background: var(--brand-light);
+    }
+
+    &__radio {
+        accent-color: var(--brand);
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        margin-top: 2px;
+        cursor: pointer;
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    &__label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+    }
+
+    &__desc {
+        font-size: 11px;
+        color: var(--text-muted);
+        line-height: 1.4;
+    }
+}
+
+// ── Buttons used in this component ────────────────────────────────────
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: var(--brand);
+    color: var(--text-on-brand);
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover:not(:disabled) {
+        background: var(--brand-hover);
+    }
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: var(--bg-subtle);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover:not(:disabled) {
+        background: var(--bg-muted);
+    }
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
