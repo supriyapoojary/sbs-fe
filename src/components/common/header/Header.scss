@@ -14,14 +14,13 @@
     gap: 8px;
 }
 
-// Brand — left side, no flex growth
 .header-brand {
     display: flex;
     align-items: center;
     gap: 8px;
     text-decoration: none;
     flex-shrink: 0;
-    margin-right: auto; // pushes everything else to the right
+    margin-right: auto;
 
     img {
         width: 100px;
@@ -39,12 +38,10 @@
     }
 }
 
-// Nav links — right side, after brand
 .header-nav {
     display: flex;
     align-items: center;
     gap: 2px;
-
     @include tablet {
         display: none;
     }
@@ -62,41 +59,22 @@
             background 0.15s;
 
         &:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.1);
+            color: #e7ad1b;
+            background: rgba(255, 255, 255, 0);
         }
         &.active {
-            color: #fff;
+            color: #e7ad1b;
             font-weight: 600;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0);
         }
     }
 }
 
-// Right actions — notification + user avatar
 .header-actions {
     display: flex;
     align-items: center;
     gap: 6px;
     flex-shrink: 0;
-
-    .btn-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 34px;
-        height: 34px;
-        border-radius: 6px;
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: rgba(255, 255, 255, 0.8);
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-        &:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-    }
 
     .hamburger {
         display: none;
@@ -106,7 +84,29 @@
     }
 }
 
-// User menu
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    svg {
+        color: #fff;
+    }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+}
+
 .user-menu {
     position: relative;
 }
@@ -119,6 +119,7 @@
     padding: 0;
     line-height: 0;
     -webkit-tap-highlight-color: transparent;
+
     &:hover {
         border-color: rgba(255, 255, 255, 0.7);
     }
@@ -137,7 +138,6 @@
     font-weight: 700;
 }
 
-// User dropdown
 .user-dropdown {
     position: absolute;
     top: calc(100% + 10px);
@@ -201,7 +201,6 @@
     }
 }
 
-// Mobile nav drawer
 .mobile-nav {
     position: fixed;
     top: 52px;

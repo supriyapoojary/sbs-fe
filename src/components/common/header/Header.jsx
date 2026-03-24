@@ -1,8 +1,7 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, NavLink } from "react-router-dom";
-import { toggleTheme } from "../../../store/themeSlice";
-import { selectThemeMode } from "../../../store/themeSlice";
+import { toggleTheme, selectThemeMode } from "../../../store/themeSlice";
 import { selectCurrentUser, logoutSuccess } from "../../../store/authSlice";
 import AuthService from "../../../services/auth.service";
 import logo from "../../../assets/images/logo.PNG";
@@ -23,8 +22,8 @@ const Header = () => {
     const theme = useSelector(selectThemeMode);
     const user = useSelector(selectCurrentUser);
 
-    const [menuOpen, setMenuOpen] = useState(false); // mobile hamburger
-    const [userOpen, setUserOpen] = useState(false); // user dropdown
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [userOpen, setUserOpen] = useState(false);
 
     const initials =
         user?.name
@@ -42,13 +41,10 @@ const Header = () => {
 
     return (
         <header className="header">
-            {/* Brand */}
             <NavLink to="/booking" className="header-brand">
                 <img src={logo} alt="spa" />
-                {/* <span>Spa Booking</span> */}
             </NavLink>
 
-            {/* Desktop nav */}
             <nav className="header-nav">
                 {NAV_LINKS.map(({ label, path }) => (
                     <NavLink key={path} to={path} className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}>
@@ -57,14 +53,11 @@ const Header = () => {
                 ))}
             </nav>
 
-            {/* Right actions */}
             <div className="header-actions">
-                {/* Notification bell */}
-                <button className="btn btn-icon icon-btn" title="Notifications">
+                <button className="btn-icon" title="Notifications">
                     <BellIcon />
                 </button>
 
-                {/* User avatar + dropdown */}
                 <div className="user-menu">
                     <button className="user-menu-trigger" onClick={() => setUserOpen((v) => !v)} title={user?.name}>
                         <div className="avatar">{initials}</div>
@@ -102,13 +95,11 @@ const Header = () => {
                     )}
                 </div>
 
-                {/* Mobile hamburger */}
-                <button className="btn btn-icon icon-btn hamburger" onClick={() => setMenuOpen((v) => !v)} aria-label="Menu">
+                <button className="btn-icon hamburger" onClick={() => setMenuOpen((v) => !v)} aria-label="Menu">
                     <HamburgerIcon />
                 </button>
             </div>
 
-            {/* Mobile nav drawer */}
             {menuOpen && (
                 <>
                     <div className="mobile-nav">
@@ -122,13 +113,11 @@ const Header = () => {
                 </>
             )}
 
-            {/* Close user dropdown on outside click */}
             {userOpen && <div className="overlay transparent" onClick={() => setUserOpen(false)} />}
         </header>
     );
 };
 
-// ── Icons ───────────────────────────────────────────────────────────
 const BellIcon = () => (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
