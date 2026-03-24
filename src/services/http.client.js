@@ -21,7 +21,7 @@ httpClient.interceptors.response.use(
         const status = err.response?.status;
         const message = err.response?.data?.message || err.message || "Something went wrong";
 
-        if (status === 401) {
+        if (status === 401 && !err.config?.url?.includes("/login")) {
             localStorage.clear();
             window.location.href = "/login";
         }

@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import logo from "../../../assets/images/flower.png";
 import { loginSuccess } from "../../../store/authSlice";
 import AuthService from "../../../services/auth.service";
 import logger from "../../../utils/logger";
+import logo from "../../../assets/images/flower.png";
 import "./Login.scss";
 
 const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
+
     const from = location.state?.from?.pathname || "/booking";
 
     const [form, setForm] = useState({ email: "", password: "" });
@@ -23,20 +24,20 @@ const Login = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!form.email || !form.password) return setError("Email and password are required.");
+        e.preventDefault(); // prevents page refresh
+        if (!form.email || !form.password) {
+            setError("Email and password are required.");
+            return;
+        }
 
         setLoading(true);
         try {
-            // ✅ ONLY CHANGE: remove fake key_pass
             const res = await AuthService.login(form);
-
             dispatch(loginSuccess({ token: res.token, user: res.user }));
             logger.action("User logged in", { email: form.email });
-
             navigate(from, { replace: true });
         } catch (err) {
-            setError(err.message || "Login failed. Please check your credentials.");
+            setError(err.message || "Invalid email or password. Please try again.");
             logger.apiError("Login failed", err);
         } finally {
             setLoading(false);
