@@ -15,7 +15,9 @@
     animation: fadeIn 0.15s ease;
     @include scrollbar;
 
-    section { padding: 14px 16px; }
+    section {
+        padding: 14px 16px;
+    }
 
     hr {
         border: none;
@@ -39,7 +41,10 @@
         color: var(--text);
         cursor: pointer;
         padding: 3px 0;
-        input { accent-color: var(--brand); cursor: pointer; }
+        input {
+            accent-color: var(--brand);
+            cursor: pointer;
+        }
     }
 
     .status-grid {
@@ -61,6 +66,8 @@
         cursor: pointer;
         font-family: inherit;
         text-align: left;
-        &:hover { background: var(--brand-light); }
+        &:hover {
+            background: var(--brand-light);
+        }
     }
 }

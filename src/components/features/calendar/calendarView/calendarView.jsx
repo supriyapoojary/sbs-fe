@@ -4,7 +4,15 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import dayjs from "dayjs";
 import { useGetBookingsQuery, useGetTherapistsQuery } from "../../../../store/bookingApi";
 import { selectActiveDate, selectActiveOutlet, selectSearchQuery, selectDisplayInterval, selectFilters, openPanel } from "../../../../store/uiSlice";
-import { TIME_SLOTS, SLOT_HEIGHT_PX, THERAPIST_COL_WIDTH, TIME_COL_WIDTH, TOTAL_SLOTS, HOUR_HEIGHT_PX, timeToSlotIndex } from "../../../../constants/calendarConstants";
+import {
+    TIME_SLOTS,
+    SLOT_HEIGHT_PX,
+    THERAPIST_COL_WIDTH,
+    TIME_COL_WIDTH,
+    TOTAL_SLOTS,
+    HOUR_HEIGHT_PX,
+    timeToSlotIndex,
+} from "../../../../constants/calendarConstants";
 import { getTherapistColor, getTherapistBg } from "../../../../constants/therapistColors";
 import BookingBlock from "../bookingBlock/bookingBlock";
 import CalendarDndContext from "../calendarDnd/CalendarDndContext";
@@ -54,11 +62,11 @@ TherapistColumn.displayName = "TherapistColumn";
 
 const CalendarView = () => {
     const dispatch = useDispatch();
-    const activeDate  = useSelector(selectActiveDate);
-    const outletId    = useSelector(selectActiveOutlet);
+    const activeDate = useSelector(selectActiveDate);
+    const outletId = useSelector(selectActiveOutlet);
     const searchQuery = useSelector(selectSearchQuery);
-    const interval    = useSelector(selectDisplayInterval);
-    const filters     = useSelector(selectFilters); // FIX 1: read filters
+    const interval = useSelector(selectDisplayInterval);
+    const filters = useSelector(selectFilters); // FIX 1: read filters
 
     const bodyRef = useRef(null);
     const headerRef = useRef(null);
@@ -94,17 +102,14 @@ const CalendarView = () => {
     });
 
     const therapists = Array.isArray(therapistsRaw) ? therapistsRaw : [];
-    const bookings   = Array.isArray(bookingsRaw)   ? bookingsRaw   : [];
+    const bookings = Array.isArray(bookingsRaw) ? bookingsRaw : [];
 
     // FIX 2: correct flattened field names for search
     const filtered = useMemo(() => {
         if (!searchQuery) return bookings;
         const q = searchQuery.toLowerCase();
         return bookings.filter(
-            (b) =>
-                b?.customer_name?.toLowerCase().includes(q) ||
-                b?.mobile_number?.includes(q) ||
-                b?.service_name?.toLowerCase().includes(q)
+            (b) => b?.customer_name?.toLowerCase().includes(q) || b?.mobile_number?.includes(q) || b?.service_name?.toLowerCase().includes(q)
         );
     }, [bookings, searchQuery]);
 
@@ -123,9 +128,12 @@ const CalendarView = () => {
         return therapists.filter((t) => t.gender === filters.group);
     }, [therapists, filters.group]);
 
-    const cols        = useMemo(() => (mobile ? [filteredTherapists[mobileColIndex]].filter(Boolean) : filteredTherapists), [mobile, filteredTherapists, mobileColIndex]);
+    const cols = useMemo(
+        () => (mobile ? [filteredTherapists[mobileColIndex]].filter(Boolean) : filteredTherapists),
+        [mobile, filteredTherapists, mobileColIndex]
+    );
     const timeColWidth = mobile ? 52 : TIME_COL_WIDTH;
-    const colWidth    = mobile ? window.innerWidth - timeColWidth : THERAPIST_COL_WIDTH;
+    const colWidth = mobile ? window.innerWidth - timeColWidth : THERAPIST_COL_WIDTH;
 
     const virtualizer = useVirtualizer({
         count: cols.length,
@@ -163,7 +171,7 @@ const CalendarView = () => {
     return (
         <CalendarDndContext
             activeBooking={activeBooking}
-            activeService={activeBooking?.service_name}  // FIX 4: correct field names
+            activeService={activeBooking?.service_name} // FIX 4: correct field names
             activeClient={activeBooking?.customer_name}
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}
@@ -247,14 +255,11 @@ const CalendarView = () => {
                     </div>
 
                     {/* Grid */}
-                    <div
-                        className="calendar-grid"
-                        style={{ width: virtualizer.getTotalSize(), height: totalHeight, position: "relative" }}
-                    >
+                    <div className="calendar-grid" style={{ width: virtualizer.getTotalSize(), height: totalHeight, position: "relative" }}>
                         {virtualizer.getVirtualItems().map((vCol) => {
                             const t = cols[vCol.index];
                             if (!t) return null;
-                            const isSource  = activeBooking?.therapist_id === t.id;
+                            const isSource = activeBooking?.therapist_id === t.id;
                             const isDropCol = dropTarget?.therapistId === t.id;
                             return (
                                 <TherapistColumn

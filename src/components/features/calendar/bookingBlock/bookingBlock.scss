@@ -108,13 +108,27 @@
         color: #fff;
         flex-shrink: 0;
 
-        &--confirmed   { background: #16a34a; }
-        &--completed   { background: #2563eb; }
-        &--cancelled   { background: #dc2626; }
-        &--in_progress { background: #f59e0b; }
-        &--source      { background: #0891b2; }
-        &--room        { background: #7c3aed; }
-        &--note        { background: #6b7280; }
+        &--confirmed {
+            background: #16a34a;
+        }
+        &--completed {
+            background: #2563eb;
+        }
+        &--cancelled {
+            background: #dc2626;
+        }
+        &--in_progress {
+            background: #f59e0b;
+        }
+        &--source {
+            background: #0891b2;
+        }
+        &--room {
+            background: #7c3aed;
+        }
+        &--note {
+            background: #6b7280;
+        }
     }
 
     &--cancelled {

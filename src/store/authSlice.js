@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import AuthService from "../services/auth.service";
 
 // Boot-time check — read token from localStorage into Redux initial state
 // This is the single source of truth for auth state

@@ -4,13 +4,13 @@ import { setFilters, clearFilters, selectFilters } from "../../../../store/uiSli
 import "./FilterPanel.scss";
 
 const STATUSES = [
-    { id: "confirmed",   label: "Confirmed" },
+    { id: "confirmed", label: "Confirmed" },
     { id: "unconfirmed", label: "Unconfirmed" },
-    { id: "checked_in",  label: "Checked In" },
-    { id: "completed",   label: "Completed" },
-    { id: "cancelled",   label: "Cancelled" },
-    { id: "no_show",     label: "No Show" },
-    { id: "holding",     label: "Holding" },
+    { id: "checked_in", label: "Checked In" },
+    { id: "completed", label: "Completed" },
+    { id: "cancelled", label: "Cancelled" },
+    { id: "no_show", label: "No Show" },
+    { id: "holding", label: "Holding" },
     { id: "in_progress", label: "Check-in (In Progress)" },
 ];
 
@@ -20,17 +20,15 @@ const DEFAULT_STATUSES = ["confirmed", "unconfirmed", "checked_in", "completed",
 
 const FilterPanel = ({ onClose }) => {
     const dispatch = useDispatch();
-    const filters  = useSelector(selectFilters);
+    const filters = useSelector(selectFilters);
 
-    const group    = filters.group    || "all";
+    const group = filters.group || "all";
     const statuses = filters.status?.length ? filters.status : DEFAULT_STATUSES;
 
     const setGroup = (g) => dispatch(setFilters({ group: g }));
 
     const toggleStatus = (id) => {
-        const updated = statuses.includes(id)
-            ? statuses.filter(x => x !== id)
-            : [...statuses, id];
+        const updated = statuses.includes(id) ? statuses.filter((x) => x !== id) : [...statuses, id];
         dispatch(setFilters({ status: updated }));
     };
 
@@ -44,7 +42,7 @@ const FilterPanel = ({ onClose }) => {
             {/* Group by */}
             <section>
                 <h4>Show by group (Person who is on duty)</h4>
-                {["all", "male", "female"].map(g => (
+                {["all", "male", "female"].map((g) => (
                     <label key={g} className="radio-row">
                         <input type="radio" name="group" value={g} checked={group === g} onChange={() => setGroup(g)} />
                         {g === "all" ? "All Therapist" : g.charAt(0).toUpperCase() + g.slice(1)}
@@ -57,7 +55,7 @@ const FilterPanel = ({ onClose }) => {
             {/* Resources */}
             <section>
                 <h4>Resources</h4>
-                {RESOURCES.map(r => (
+                {RESOURCES.map((r) => (
                     <label key={r} className="radio-row">
                         <input type="radio" name="resource" value={r} /> {r}
                     </label>
