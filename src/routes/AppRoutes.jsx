@@ -11,6 +11,7 @@ import CalendarView from "../components/features/calendar/calendarView/calendarV
 const Login = lazy(() => import("../components/common/login/Login"));
 const NotFound = lazy(() => import("../components/common/notFound/NotFound"));
 const Admin = lazy(() => import("../components/features/admin/Admin"));
+const TherapistsPage = lazy(() => import("../components/features/therapists/Therapists"));
 const BookingPanel = lazy(() => import("../components/features/booking/bookingPanel/BookingPanel"));
 
 const PageLoader = () => (
@@ -26,8 +27,7 @@ const PageLoader = () => (
             fontSize: 13,
         }}
     >
-        <div className="spinner" />
-        Loading…
+        <div className="spinner" /> Loading…
     </div>
 );
 
@@ -36,7 +36,6 @@ const RootRedirect = () => {
     return <Navigate to={auth ? "/booking" : "/login"} replace />;
 };
 
-// Protected shell — renders Header once, shared across all protected routes
 const ProtectedShell = () => {
     const auth = useSelector(selectIsAuthenticated);
     if (!auth) return <Navigate to="/login" replace />;
@@ -57,7 +56,6 @@ const ProtectedShell = () => {
     );
 };
 
-// Booking page — FilterBar + Calendar (DnD context lives inside CalendarView)
 const BookingLayout = () => (
     <>
         <FilterBar />
@@ -72,10 +70,13 @@ const AppRoutes = () => (
                 <Route path="/" element={<RootRedirect />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/404" element={<NotFound />} />
+
                 <Route element={<ProtectedShell />}>
                     <Route path="/booking" element={<BookingLayout />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/therapists" element={<TherapistsPage />} />
                 </Route>
+
                 <Route path="*" element={<Navigate to="/404" replace />} />
             </Routes>
         </Suspense>

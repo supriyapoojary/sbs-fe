@@ -2,7 +2,6 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import baseQuery from "../api/baseQuery";
 import { API } from "../config/api.config";
 
-// Flatten booking from API shape to flat object for calendar rendering
 const getFirstBookingItem = (booking_item) => {
     if (!booking_item || typeof booking_item !== "object") return {};
     const firstKey = Object.keys(booking_item)[0];
@@ -44,8 +43,6 @@ export const bookingApi = createApi({
     tagTypes: ["Booking"],
 
     endpoints: (builder) => ({
-        // Outlets — from outlet-timings
-        // Response: { data: { list: { outlet: { id, name } } } }
         getOutlets: builder.query({
             query: ({ outlet, start_date, end_date }) => ({
                 url: API.OUTLET_TIMINGS,
@@ -57,8 +54,6 @@ export const bookingApi = createApi({
             },
         }),
 
-        // Therapists
-        // Response: { data: { data: { list: { staffs: [...] } } } }
         getTherapists: builder.query({
             query: (params) => ({ url: API.THERAPISTS, params }),
             transformResponse: (res) => {
@@ -68,8 +63,6 @@ export const bookingApi = createApi({
             },
         }),
 
-        // Bookings
-        // Response: { data: { data: { list: { bookings: [...] } } } }
         getBookings: builder.query({
             query: (params) => ({ url: API.BOOKING_LIST, params }),
             transformResponse: (res) => {
@@ -80,14 +73,11 @@ export const bookingApi = createApi({
             providesTags: ["Booking"],
         }),
 
-        // Services
-        // Response: { data: { data: { list: { category: [{ services: [...] }] } } } }
         getServices: builder.query({
             query: (params) => ({ url: API.SERVICE_CATEGORY, params }),
             transformResponse: (res) => {
                 const categories = res?.data?.data?.list?.category;
                 if (!Array.isArray(categories)) return [];
-                // Flatten categories → services
                 return categories.flatMap((cat) =>
                     (cat.services || []).map((s) => ({
                         ...s,
@@ -98,8 +88,7 @@ export const bookingApi = createApi({
             },
         }),
 
-        // Rooms — outlet goes in URL path
-        // Response shape varies — try all known paths
+        // rooms API response shape is inconsistent — fallback chain handles all known variants
         getRooms: builder.query({
             query: ({ outlet, ...params }) => ({
                 url: `${API.ROOM_BOOKINGS}/outlet/${outlet}`,
@@ -107,7 +96,7 @@ export const bookingApi = createApi({
             }),
             transformResponse: (res) => {
                 const d = res?.data;
-                if (Array.isArray(d?.data?.data?.list)) return d.data.data.list; // same pattern as other APIs
+                if (Array.isArray(d?.data?.data?.list)) return d.data.data.list;
                 if (Array.isArray(d?.data?.data)) return d.data.data;
                 if (Array.isArray(d?.data?.list)) return d.data.list;
                 if (Array.isArray(d?.data?.rooms)) return d.data.rooms;
@@ -119,8 +108,6 @@ export const bookingApi = createApi({
             },
         }),
 
-        // Users / clients
-        // Response: { data: { data: { list: { users: [...] } } } }
         getUsers: builder.query({
             query: (params) => ({ url: API.USERS, params }),
             transformResponse: (res) => {
@@ -133,7 +120,6 @@ export const bookingApi = createApi({
             },
         }),
 
-        // Mutations
         createBooking: builder.mutation({
             query: (formData) => ({ url: API.CREATE_BOOKING, method: "POST", data: formData }),
             invalidatesTags: ["Booking"],
@@ -153,11 +139,6 @@ export const bookingApi = createApi({
             query: (id) => ({ url: API.DELETE_BOOKING(id), method: "DELETE" }),
             invalidatesTags: ["Booking"],
         }),
-
-        rescheduleBooking: builder.mutation({
-            query: ({ id, data }) => ({ url: API.UPDATE_BOOKING(id), method: "POST", data }),
-            invalidatesTags: ["Booking"],
-        }),
     }),
 });
 
@@ -172,5 +153,4 @@ export const {
     useUpdateBookingMutation,
     useCancelBookingMutation,
     useDeleteBookingMutation,
-    useRescheduleBookingMutation,
 } = bookingApi;

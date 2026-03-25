@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useRescheduleBookingMutation, bookingApi } from "../store/bookingApi";
+import { useUpdateBookingMutation, bookingApi } from "../store/bookingApi";
 import { selectActiveDate, selectActiveOutlet } from "../store/uiSlice";
 import { SLOT_HEIGHT_PX, THERAPIST_COL_WIDTH, TIME_COL_WIDTH, slotIndexToTime } from "../constants/calendarConstants";
 import dayjs from "dayjs";
@@ -11,17 +11,12 @@ const useBookingDrag = ({ therapists, gridRef, timeColWidth = TIME_COL_WIDTH }) 
     const dispatch = useDispatch();
     const activeDate = useSelector(selectActiveDate);
     const outletId = useSelector(selectActiveOutlet);
-    const [reschedule] = useRescheduleBookingMutation();
+    const [reschedule] = useUpdateBookingMutation();
 
     const [activeBooking, setActiveBooking] = useState(null);
-
-    // { therapistId, slotIndex } — slot currently under the ghost
     const [dropTarget, setDropTarget] = useState(null);
-
-    // Track pointer move during drag to compute live drop target
     const rafRef = useRef(null);
 
-    // Reusable coord → { colIndex, slotIndex } calculator
     const getCoordsFromPointer = useCallback(
         (clientX, clientY) => {
             if (!gridRef?.current) return null;
@@ -39,7 +34,6 @@ const useBookingDrag = ({ therapists, gridRef, timeColWidth = TIME_COL_WIDTH }) 
         [gridRef, timeColWidth, therapists]
     );
 
-    // Listen to pointermove while dragging to update drop target highlight
     useEffect(() => {
         if (!activeBooking) {
             setDropTarget(null);
@@ -49,8 +43,6 @@ const useBookingDrag = ({ therapists, gridRef, timeColWidth = TIME_COL_WIDTH }) 
         const handleMove = (e) => {
             const clientX = e.touches?.[0]?.clientX ?? e.clientX;
             const clientY = e.touches?.[0]?.clientY ?? e.clientY;
-
-            // Throttle via rAF — no layout thrash on every pixel
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
             rafRef.current = requestAnimationFrame(() => {
                 const coords = getCoordsFromPointer(clientX, clientY);
@@ -78,7 +70,7 @@ const useBookingDrag = ({ therapists, gridRef, timeColWidth = TIME_COL_WIDTH }) 
     const onDragEnd = useCallback(
         async (event) => {
             const booking = activeBooking;
-            const target = dropTarget; // use the live-tracked position — most precise
+            const target = dropTarget;
             setActiveBooking(null);
             setDropTarget(null);
             if (!booking || !target) return;
@@ -87,21 +79,19 @@ const useBookingDrag = ({ therapists, gridRef, timeColWidth = TIME_COL_WIDTH }) 
             const newTime = slotIndexToTime(target.slotIndex);
             if (!newTherapist || !newTime) return;
 
-            // No-op if dropped on same position
             if (booking.therapist_id === newTherapist.id && booking.start_time?.slice(0, 5) === newTime) return;
 
-            // Block drop into past
             const apiDate = dayjs(activeDate).format("DD-MM-YYYY");
             const dropDateTime = dayjs(`${activeDate} ${newTime}`, "YYYY-MM-DD HH:mm");
             if (dropDateTime.isBefore(dayjs())) {
                 toast.error("Cannot move booking to a past time.");
                 return;
             }
+
             const duration = booking.duration || 60;
             const [h, m] = newTime.split(":");
             const endTime = dayjs().hour(Number(h)).minute(Number(m)).add(duration, "minute").format("HH:mm");
 
-            // Match exact query args used in CalendarView so RTK finds the cached list
             const queryArgs = {
                 daterange: `${apiDate} / ${apiDate}`,
                 outlet: outletId,
@@ -160,18 +150,14 @@ const useBookingDrag = ({ therapists, gridRef, timeColWidth = TIME_COL_WIDTH }) 
 
                 await reschedule({ id: booking.id, data: fd }).unwrap();
                 toast.success(`Moved to ${newTherapist.name} at ${newTime}`);
-                logger.action("Booking rescheduled", {
-                    bookingId: booking.id,
-                    therapist: newTherapist.name,
-                    time: newTime,
-                });
+                logger.action("Booking rescheduled", { bookingId: booking.id, therapist: newTherapist.name, time: newTime });
             } catch (err) {
                 patchResult.undo();
                 toast.error("Could not reschedule. Booking moved back.");
                 logger.apiError("Reschedule failed", err);
             }
         },
-        [activeBooking, dropTarget, therapists, gridRef, timeColWidth, reschedule, activeDate, outletId, dispatch]
+        [activeBooking, dropTarget, therapists, reschedule, activeDate, outletId, dispatch]
     );
 
     return { activeBooking, dropTarget, onDragStart, onDragEnd };
