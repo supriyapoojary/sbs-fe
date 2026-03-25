@@ -152,6 +152,11 @@ const BookingFormMode = ({ booking, mode }) => {
     const selectedCustomer = users.find((u) => u.id === Number(watch("customer")));
 
     const onSubmit = async (data) => {
+        const bookingDateTime = dayjs(`${data.date} ${data.start_time}`, "YYYY-MM-DD HH:mm");
+        if (bookingDateTime.isBefore(dayjs())) {
+            toast.error("Cannot save a booking in the past.");
+            return;
+        }
         try {
             const dateStr = dayjs(data.date).format("DD-MM-YYYY");
             const duration = Number(selectedService?.duration) || 60;

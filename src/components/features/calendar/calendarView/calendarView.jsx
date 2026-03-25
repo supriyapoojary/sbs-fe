@@ -2,6 +2,7 @@ import React, { useRef, useMemo, useCallback, useState, useEffect, memo } from "
 import { useSelector, useDispatch } from "react-redux";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import dayjs from "dayjs";
+import toast from "react-hot-toast";
 import { useGetBookingsQuery, useGetTherapistsQuery } from "../../../../store/bookingApi";
 import { selectActiveDate, selectActiveOutlet, selectSearchQuery, selectDisplayInterval, selectFilters, openPanel } from "../../../../store/uiSlice";
 import {
@@ -62,11 +63,11 @@ TherapistColumn.displayName = "TherapistColumn";
 
 const CalendarView = () => {
     const dispatch = useDispatch();
-    const activeDate = useSelector(selectActiveDate);
+    const activeDate = useSelector(selectActiveDate); // YYYY-MM-DD
     const outletId = useSelector(selectActiveOutlet);
     const searchQuery = useSelector(selectSearchQuery);
     const interval = useSelector(selectDisplayInterval);
-    const filters = useSelector(selectFilters); // FIX 1: read filters
+    const filters = useSelector(selectFilters); // 15 | 30 | 60
 
     const bodyRef = useRef(null);
     const headerRef = useRef(null);
@@ -79,8 +80,10 @@ const CalendarView = () => {
         return () => window.removeEventListener("resize", fn);
     }, []);
 
+    // API date format: DD-MM-YYYY (as per Postman)
     const apiDate = dayjs(activeDate).format("DD-MM-YYYY");
 
+    // Therapists API
     const { data: therapistsRaw = [], isLoading: tLoading } = useGetTherapistsQuery({
         availability: 1,
         outlet: outletId,
@@ -93,6 +96,7 @@ const CalendarView = () => {
         leave: 0,
     });
 
+    // Bookings API
     const { data: bookingsRaw = [], isLoading: bLoading } = useGetBookingsQuery({
         daterange: `${apiDate} / ${apiDate}`,
         outlet: outletId,
@@ -101,18 +105,20 @@ const CalendarView = () => {
         pagination: 1,
     });
 
-    const therapists = Array.isArray(therapistsRaw) ? therapistsRaw : [];
-    const bookings = Array.isArray(bookingsRaw) ? bookingsRaw : [];
+    // Always ensure arrays — guards against unexpected API shapes
+    const therapists = useMemo(() => (Array.isArray(therapistsRaw) ? therapistsRaw : []), [therapistsRaw]);
+    const bookings = useMemo(() => (Array.isArray(bookingsRaw) ? bookingsRaw : []), [bookingsRaw]);
 
-    // FIX 2: correct flattened field names for search
+    // Filter bookings by search
     const filtered = useMemo(() => {
         if (!searchQuery) return bookings;
         const q = searchQuery.toLowerCase();
         return bookings.filter(
-            (b) => b?.customer_name?.toLowerCase().includes(q) || b?.mobile_number?.includes(q) || b?.service_name?.toLowerCase().includes(q)
+            (b) => b?.client?.name?.toLowerCase().includes(q) || b?.client?.phone?.includes(q) || b?.service?.name?.toLowerCase().includes(q)
         );
     }, [bookings, searchQuery]);
 
+    // Group bookings by therapist
     const byTherapist = useMemo(() => {
         const map = {};
         filtered.forEach((b) => {
@@ -122,11 +128,7 @@ const CalendarView = () => {
         return map;
     }, [filtered]);
 
-    // FIX 3: apply gender group filter from FilterPanel
-    const filteredTherapists = useMemo(() => {
-        if (!filters.group || filters.group === "all") return therapists;
-        return therapists.filter((t) => t.gender === filters.group);
-    }, [therapists, filters.group]);
+    const filteredTherapists = filters.group && filters.group !== "all" ? therapists.filter((t) => t.gender === filters.group) : therapists;
 
     const cols = useMemo(
         () => (mobile ? [filteredTherapists[mobileColIndex]].filter(Boolean) : filteredTherapists),
@@ -153,6 +155,11 @@ const CalendarView = () => {
         (therapistId, slotTime) => {
             const [h, m] = slotTime.split(":");
             const padded = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+            const slotDateTime = dayjs(`${activeDate} ${padded}`, "YYYY-MM-DD HH:mm");
+            if (slotDateTime.isBefore(dayjs())) {
+                toast.error("Cannot create bookings in the past. Please use current or future dates.");
+                return;
+            }
             dispatch(openPanel({ mode: "create", prefill: { therapist_id: therapistId, start_time: padded, date: activeDate } }));
         },
         [dispatch, activeDate]
@@ -171,8 +178,8 @@ const CalendarView = () => {
     return (
         <CalendarDndContext
             activeBooking={activeBooking}
-            activeService={activeBooking?.service_name} // FIX 4: correct field names
-            activeClient={activeBooking?.customer_name}
+            activeService={activeBooking?.service}
+            activeClient={activeBooking?.client}
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}
         >
@@ -215,7 +222,7 @@ const CalendarView = () => {
                                             className="therapist-avatar"
                                             style={{ background: getTherapistBg(t.gender), color: getTherapistColor(t.gender) }}
                                         >
-                                            {cols.indexOf(t) + 1} {/* FIX 4: use cols not therapists */}
+                                            {cols.indexOf(t) + 1}
                                         </div>
                                         <div className="therapist-info">
                                             <span className="therapist-name">{t.name}</span>
