@@ -76,34 +76,34 @@
     gap: 6px;
     flex-shrink: 0;
 
+    .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 6px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 1);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+
+        svg {
+            color: #fff;
+        }
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+    }
+
     .hamburger {
         display: none;
         @include tablet {
             display: inline-flex;
         }
-    }
-}
-
-.btn-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 6px;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    color: rgba(255, 255, 255, 1);
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-
-    svg {
-        color: #fff;
-    }
-
-    &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
     }
 }
 
