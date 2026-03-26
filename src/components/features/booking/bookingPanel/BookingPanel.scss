@@ -98,3 +98,75 @@
         animation: pulse 1.5s ease-in-out infinite;
     }
 }
+
+.dots-menu {
+    position: relative;
+
+    .dots-dropdown {
+        position: absolute;
+        top: calc(100% + 4px);
+        right: 0;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: var(--shadow-md);
+        z-index: 10;
+        overflow: hidden;
+        min-width: 140px;
+        animation: fadeIn 0.15s ease;
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 14px;
+            text-align: left;
+            background: none;
+            border: none;
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            color: var(--danger);
+            transition: background 0.1s;
+
+            &:hover {
+                background: var(--bg-subtle);
+            }
+        }
+    }
+}
+
+.dots-menu {
+    position: relative;
+
+    .dots-dropdown {
+        position: absolute;
+        top: calc(100% + 4px);
+        right: 0;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: var(--shadow-md);
+        z-index: 10;
+        overflow: hidden;
+        min-width: 140px;
+        animation: fadeIn 0.15s ease;
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 14px;
+            text-align: left;
+            background: none;
+            border: none;
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            color: var(--danger);
+            transition: background 0.1s;
+
+            &:hover {
+                background: #fef2f2;
+            }
+        }
+    }
+}

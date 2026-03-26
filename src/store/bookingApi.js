@@ -130,6 +130,11 @@ export const bookingApi = createApi({
             invalidatesTags: ["Booking"],
         }),
 
+        updateBookingStatus: builder.mutation({
+            query: (formData) => ({ url: "/api/v1/bookings/update/payment-status", method: "POST", data: formData }),
+            invalidatesTags: ["Booking"],
+        }),
+
         cancelBooking: builder.mutation({
             query: (formData) => ({ url: API.CANCEL_BOOKING, method: "POST", data: formData }),
             invalidatesTags: ["Booking"],
@@ -151,6 +156,7 @@ export const {
     useGetUsersQuery,
     useCreateBookingMutation,
     useUpdateBookingMutation,
+    useUpdateBookingStatusMutation,
     useCancelBookingMutation,
     useDeleteBookingMutation,
 } = bookingApi;

@@ -111,12 +111,18 @@ const CalendarView = () => {
 
     // Filter bookings by search
     const filtered = useMemo(() => {
-        if (!searchQuery) return bookings;
-        const q = searchQuery.toLowerCase();
-        return bookings.filter(
-            (b) => b?.client?.name?.toLowerCase().includes(q) || b?.client?.phone?.includes(q) || b?.service?.name?.toLowerCase().includes(q)
-        );
-    }, [bookings, searchQuery]);
+        let result = bookings;
+        if (filters.status?.length) {
+            result = result.filter((b) => filters.status.includes(b.status));
+        }
+        if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            result = result.filter(
+                (b) => b?.customer_name?.toLowerCase().includes(q) || b?.mobile_number?.includes(q) || b?.service_name?.toLowerCase().includes(q)
+            );
+        }
+        return result;
+    }, [bookings, searchQuery, filters.status]);
 
     // Group bookings by therapist
     const byTherapist = useMemo(() => {

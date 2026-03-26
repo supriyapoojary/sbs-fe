@@ -1,8 +1,9 @@
-import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectIsPanelOpen, selectPanelMode, selectSelectedId, closePanel, setPanelMode } from "../../../../store/uiSlice";
 import { selectActiveDate, selectActiveOutlet } from "../../../../store/uiSlice";
 import { useGetBookingsQuery } from "../../../../store/bookingApi";
+import CancelDialog from "../cancelDialog/CancelDialog";
 import dayjs from "dayjs";
 import "./BookingPanel.scss";
 
@@ -17,8 +18,10 @@ const BookingPanel = () => {
     const activeDate = useSelector(selectActiveDate);
     const outletId = useSelector(selectActiveOutlet);
 
-    // Track the booking date — stays on the booking's own date even when calendar navigates away
     const [bookingDate, setBookingDate] = useState(activeDate);
+    const [dotsOpen, setDotsOpen] = useState(false);
+    const [showCancelDialog, setShowCancelDialog] = useState(false);
+    const dotsRef = useRef(null);
 
     const apiDate = dayjs(bookingDate).format("DD-MM-YYYY");
 
@@ -32,7 +35,6 @@ const BookingPanel = () => {
 
     const booking = Array.isArray(bookings) ? bookings.find((b) => b.id === selectedId) : undefined;
 
-    // When booking is found, lock its date so query stays correct after edits
     useEffect(() => {
         if (booking?.service_date) {
             const d = dayjs(booking.service_date, "DD-MM-YYYY");
@@ -40,10 +42,19 @@ const BookingPanel = () => {
         }
     }, [booking?.service_date]);
 
-    // When panel opens for a new booking, use active calendar date
     useEffect(() => {
         if (isOpen) setBookingDate(activeDate);
-    }, [isOpen, selectedId]); // reset when opening a different booking
+    }, [isOpen, selectedId]);
+
+    // close dots on outside click
+    useEffect(() => {
+        if (!dotsOpen) return;
+        const handler = (e) => {
+            if (!dotsRef.current?.contains(e.target)) setDotsOpen(false);
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, [dotsOpen]);
 
     if (!isOpen) return null;
 
@@ -58,17 +69,28 @@ const BookingPanel = () => {
                     <div className="booking-panel__header-actions">
                         {panelMode === "view" && booking && (
                             <>
-                                <button className="panel-icon-btn" title="More options">
-                                    <DotsIcon />
-                                </button>
+                                <div className="dots-menu" ref={dotsRef}>
+                                    <button className="panel-icon-btn" title="More options" onClick={() => setDotsOpen((v) => !v)}>
+                                        <DotsIcon />
+                                    </button>
+                                    {dotsOpen && (
+                                        <div className="dots-dropdown">
+                                            <button
+                                                onClick={() => {
+                                                    setDotsOpen(false);
+                                                    setShowCancelDialog(true);
+                                                }}
+                                            >
+                                                Cancel / Delete
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                                 <button className="panel-icon-btn" title="Edit" onClick={() => dispatch(setPanelMode("edit"))}>
                                     <EditIcon />
                                 </button>
                             </>
                         )}
-                        <button className="panel-cancel-btn" onClick={() => dispatch(closePanel())}>
-                            Cancel
-                        </button>
                     </div>
                 </div>
 
@@ -81,6 +103,8 @@ const BookingPanel = () => {
                     </Suspense>
                 </div>
             </aside>
+
+            {showCancelDialog && booking && <CancelDialog booking={booking} onClose={() => setShowCancelDialog(false)} />}
         </>
     );
 };

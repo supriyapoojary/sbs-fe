@@ -38,7 +38,6 @@
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
-
         &-value {
             font-size: 14px;
             font-weight: 600;
@@ -52,7 +51,6 @@
         gap: 10px;
         padding: 14px 16px;
         border-bottom: 1px solid var(--border);
-        flex-wrap: wrap;
     }
 
     &__service-block {
@@ -68,7 +66,6 @@
         font-size: 12px;
         color: #713f12;
         line-height: 1.6;
-
         [data-theme="dark"] & {
             background: #422006;
             color: #fde68a;
@@ -86,7 +83,6 @@
     }
 }
 
-// ── Status badge ──────────────────────────────────────────────────────
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -112,7 +108,8 @@
             background: #3b82f6;
         }
     }
-    &--in_progress {
+    &--in_progress,
+    &--check-in__in_progress_ {
         background: #fffbeb;
         color: #92400e;
         .status-badge__dot {
@@ -133,28 +130,8 @@
             background: #ef4444;
         }
     }
-
-    [data-theme="dark"] & {
-        &--confirmed {
-            background: #1e3a5f;
-            color: #93c5fd;
-        }
-        &--in_progress {
-            background: #451a03;
-            color: #fcd34d;
-        }
-        &--completed {
-            background: #14532d;
-            color: #86efac;
-        }
-        &--cancelled {
-            background: #450a0a;
-            color: #fca5a5;
-        }
-    }
 }
 
-// ── Client card ───────────────────────────────────────────────────────
 .client-avatar {
     width: 40px;
     height: 40px;
@@ -186,53 +163,8 @@
         color: var(--text-muted);
         margin-top: 2px;
     }
-
-    &__membership {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        margin-top: 8px;
-        gap: 8px;
-        font-size: 12px;
-        color: var(--text-muted);
-    }
 }
 
-// ── Toggle switch ─────────────────────────────────────────────────────
-.toggle-switch {
-    position: relative;
-    width: 36px;
-    height: 20px;
-    border-radius: 99px;
-    background: var(--border-strong);
-    border: none;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background 0.2s;
-
-    &::after {
-        content: "";
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: #fff;
-        transition: transform 0.2s;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    }
-
-    &--on {
-        background: #f97316;
-        &::after {
-            transform: translateX(16px);
-        }
-    }
-}
-
-// ── Service block ─────────────────────────────────────────────────────
 .service-block {
     &__header {
         display: flex;
@@ -240,22 +172,12 @@
         justify-content: space-between;
         margin-bottom: 10px;
     }
-
     &__name {
         font-size: 13px;
         font-weight: 600;
         color: var(--text);
         flex: 1;
     }
-
-    &__expand {
-        background: none;
-        border: none;
-        color: var(--text-muted);
-        cursor: pointer;
-        padding: 2px;
-    }
-
     &__row {
         display: flex;
         align-items: center;
@@ -265,45 +187,15 @@
         margin-bottom: 6px;
         flex-wrap: wrap;
     }
-
     &__label {
         color: var(--text-muted);
         flex-shrink: 0;
     }
-
-    &__therapist {
-        display: flex;
-        align-items: center;
-        gap: 4px;
+    &__value {
         font-weight: 500;
     }
 }
 
-.ml-8 {
-    margin-left: 8px;
-}
-
-.therapist-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-.requested-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 11px;
-    color: var(--text-muted);
-
-    &__check {
-        color: #22c55e;
-        font-weight: 700;
-    }
-}
-
-// ── Booking details ───────────────────────────────────────────────────
 .booking-details {
     &__title {
         font-size: 13px;
@@ -311,7 +203,6 @@
         color: var(--text);
         margin-bottom: 10px;
     }
-
     &__row {
         display: flex;
         align-items: center;
@@ -320,7 +211,6 @@
         color: var(--text-sub);
         padding: 5px 0;
         border-bottom: 1px solid var(--border);
-
         span:last-child {
             color: var(--text);
             font-weight: 500;
@@ -328,91 +218,9 @@
     }
 }
 
-// ── Cancel menu ───────────────────────────────────────────────────────
-.cancel-menu-wrapper {
-    position: relative;
+.ml-8 {
+    margin-left: 8px;
 }
-
-.cancel-menu {
-    position: absolute;
-    bottom: calc(100% + 4px);
-    left: 0;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    box-shadow: var(--shadow-md);
-    z-index: 10;
-    overflow: hidden;
-    min-width: 160px;
-    animation: fadeIn 0.15s ease;
-
-    &__item {
-        display: block;
-        width: 100%;
-        padding: 10px 14px;
-        text-align: left;
-        background: none;
-        border: none;
-        font-size: 13px;
-        font-family: inherit;
-        cursor: pointer;
-        color: var(--text);
-        transition: background 0.1s;
-
-        &:hover {
-            background: var(--bg-subtle);
-        }
-
-        &--danger {
-            color: var(--danger);
-            &:hover {
-                background: #fef2f2;
-            }
-        }
-    }
-}
-
-// ── Reused button classes ─────────────────────────────────────────────
-// These match what the JSX uses: btn-secondary, btn-ghost, btn-sm
-.btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: var(--bg-subtle);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-size: 13px;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 0.15s;
-
-    &:hover {
-        background: var(--bg-muted);
-    }
-}
-
-.btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text-sub);
-    font-size: 13px;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 0.15s;
-
-    &:hover {
-        background: var(--bg-subtle);
-        color: var(--text);
-    }
-}
-
 .btn-sm {
     padding: 4px 10px !important;
     font-size: 12px !important;

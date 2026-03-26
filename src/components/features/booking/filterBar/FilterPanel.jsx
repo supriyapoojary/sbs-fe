@@ -3,20 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { setFilters, clearFilters, selectFilters } from "../../../../store/uiSlice";
 import "./FilterPanel.scss";
 
+// ids must match exact API status values
 const STATUSES = [
-    { id: "confirmed", label: "Confirmed" },
-    { id: "unconfirmed", label: "Unconfirmed" },
+    { id: "Confirmed", label: "Confirmed" },
+    { id: "Unconfirmed", label: "Unconfirmed" },
     { id: "checked_in", label: "Checked In" },
-    { id: "completed", label: "Completed" },
-    { id: "cancelled", label: "Cancelled" },
-    { id: "no_show", label: "No Show" },
-    { id: "holding", label: "Holding" },
-    { id: "in_progress", label: "Check-in (In Progress)" },
+    { id: "Completed", label: "Completed" },
+    { id: "Cancelled", label: "Cancelled" },
+    { id: "No-show", label: "No Show" },
+    { id: "Holding", label: "Holding" },
+    { id: "Check-in (In Progress)", label: "Check-in (In Progress)" },
 ];
 
 const RESOURCES = ["Rooms", "Sofa", "Monkey Chair"];
 
-const DEFAULT_STATUSES = ["confirmed", "unconfirmed", "checked_in", "completed", "holding", "in_progress"];
+const DEFAULT_STATUSES = ["Confirmed", "Unconfirmed", "Checked In", "Completed", "Holding", "Check-in (In Progress)"];
 
 const FilterPanel = ({ onClose }) => {
     const dispatch = useDispatch();
@@ -39,7 +40,6 @@ const FilterPanel = ({ onClose }) => {
 
     return (
         <div className="filter-panel">
-            {/* Group by */}
             <section>
                 <h4>Show by group (Person who is on duty)</h4>
                 {["all", "male", "female"].map((g) => (
@@ -52,7 +52,6 @@ const FilterPanel = ({ onClose }) => {
 
             <hr />
 
-            {/* Resources */}
             <section>
                 <h4>Resources</h4>
                 {RESOURCES.map((r) => (
@@ -64,7 +63,6 @@ const FilterPanel = ({ onClose }) => {
 
             <hr />
 
-            {/* Booking status */}
             <section>
                 <h4>Booking Status</h4>
                 <div className="status-grid">

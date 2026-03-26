@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { setPanelMode } from "../../../../store/uiSlice";
-import { useCancelBookingMutation } from "../../../../store/bookingApi";
-import CancelDialog from "../cancelDialog/CancelDialog";
+import { useUpdateBookingStatusMutation } from "../../../../store/bookingApi";
+import toast from "react-hot-toast";
 import logger from "../../../../utils/logger";
 import "./BookingViewMode.scss";
 
 dayjs.extend(customParseFormat);
 
-// service_date comes as "DD-MM-YYYY" from API — needs customParseFormat
 const formatDate = (dateStr) => {
     if (!dateStr) return "—";
     const d = dayjs(dateStr, "DD-MM-YYYY");
@@ -18,8 +15,7 @@ const formatDate = (dateStr) => {
 };
 
 const BookingViewMode = ({ booking }) => {
-    const dispatch = useDispatch();
-    const [showCancelDialog, setShowCancelDialog] = useState(false);
+    const [updateStatus, { isLoading }] = useUpdateBookingStatusMutation();
 
     if (!booking) {
         return (
@@ -32,30 +28,55 @@ const BookingViewMode = ({ booking }) => {
     const status = (booking.status || "").toLowerCase();
     const isCancelled = status === "cancelled";
     const isCompleted = status === "completed";
+    const isConfirmed = status === "confirmed";
+    const isCheckedIn = status === "check-in (in progress)" || status === "in_progress";
+    const startTime = booking.start_time?.slice(0, 5) || "";
 
     const statusLabel =
         {
             confirmed: "Confirmed",
+            "check-in (in progress)": "Checked In",
             in_progress: "In Progress",
             completed: "Completed",
             cancelled: "Cancelled",
             "no-show": "No-show",
         }[status] || booking.status;
 
-    const startTime = booking.start_time?.slice(0, 5) || "";
+    const handleStatusUpdate = async (newStatus) => {
+        try {
+            const fd = new FormData();
+            fd.append("company", "1");
+            fd.append("id", booking.id);
+            fd.append("status", newStatus);
+            fd.append("panel", "outlet");
+            await updateStatus(fd).unwrap();
+            toast.success("Status updated");
+            logger.action("Booking status updated", { id: booking.id, status: newStatus });
+        } catch (err) {
+            toast.error(err?.message || "Status update failed");
+            logger.apiError("Status update failed", err);
+        }
+    };
 
     return (
         <div className="view-mode">
-            {/* Status */}
             <div className="view-mode__status-row">
-                <span className={`status-badge status-badge--${status}`}>
+                <span className={`status-badge status-badge--${status.replace(/\s|\(|\)/g, "_")}`}>
                     <span className="status-badge__dot" />
                     {statusLabel}
                 </span>
-                {isCompleted && <button className="btn btn-secondary btn-sm">View Sale</button>}
+                {isConfirmed && (
+                    <button className="btn btn-primary btn-sm" disabled={isLoading} onClick={() => handleStatusUpdate("Check-in (In Progress)")}>
+                        Check-in
+                    </button>
+                )}
+                {isCheckedIn && (
+                    <button className="btn btn-primary btn-sm" disabled={isLoading} onClick={() => handleStatusUpdate("Completed")}>
+                        Checkout
+                    </button>
+                )}
             </div>
 
-            {/* Date + Time */}
             <div className="view-mode__datetime">
                 <div className="view-mode__field">
                     <span className="view-mode__field-label">ON</span>
@@ -67,7 +88,6 @@ const BookingViewMode = ({ booking }) => {
                 </div>
             </div>
 
-            {/* Client */}
             <div className="view-mode__client">
                 <div className="client-avatar" style={{ background: "#f97316", color: "#fff" }}>
                     {(booking.customer_name?.[0] || "?").toUpperCase()}
@@ -79,7 +99,6 @@ const BookingViewMode = ({ booking }) => {
                 </div>
             </div>
 
-            {/* Service */}
             <div className="view-mode__service-block">
                 <div className="service-block__header">
                     <span className="service-block__name">{booking.service_name}</span>
@@ -108,10 +127,8 @@ const BookingViewMode = ({ booking }) => {
                 )}
             </div>
 
-            {/* Notes */}
             {booking.note && <div className="view-mode__notes">{booking.note}</div>}
 
-            {/* Booking details */}
             <div className="view-mode__booking-details">
                 <div className="booking-details__title">Booking Details</div>
                 <div className="booking-details__row">
@@ -129,17 +146,6 @@ const BookingViewMode = ({ booking }) => {
                     </div>
                 )}
             </div>
-
-            {/* Actions */}
-            {!isCancelled && !isCompleted && (
-                <div className="view-mode__actions">
-                    <button className="btn btn-ghost btn-sm btn-danger-ghost" onClick={() => setShowCancelDialog(true)}>
-                        Cancel Booking
-                    </button>
-                </div>
-            )}
-
-            {showCancelDialog && <CancelDialog booking={booking} onClose={() => setShowCancelDialog(false)} />}
         </div>
     );
 };
