@@ -11,4 +11,5 @@ export const API = {
     ROOM_BOOKINGS: "/api/v1/room-bookings",
     OUTLET_TIMINGS: "/api/v1/outlet-timings",
     USERS: "/api/v1/users",
+    UPDATE_BOOKING_STATUS: "/api/v1/bookings/update/payment-status",
 };

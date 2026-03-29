@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useUpdateBookingStatusMutation } from "../../../../store/bookingApi";
+import { useUpdateBookingStatusMutation } from "store/bookingApi";
 import toast from "react-hot-toast";
-import logger from "../../../../utils/logger";
+import logger from "utils/logger";
 import "./BookingViewMode.scss";
 
 dayjs.extend(customParseFormat);

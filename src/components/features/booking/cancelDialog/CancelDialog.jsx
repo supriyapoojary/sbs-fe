@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { closePanel } from "../../../../store/uiSlice";
-import { useCancelBookingMutation, useDeleteBookingMutation, useUpdateBookingStatusMutation } from "../../../../store/bookingApi";
-import logger from "../../../../utils/logger";
+import { closePanel } from "store/uiSlice";
+import { useCancelBookingMutation, useDeleteBookingMutation, useUpdateBookingStatusMutation } from "store/bookingApi";
+import logger from "utils/logger";
 import toast from "react-hot-toast";
 import "./CancelDialog.scss";
 

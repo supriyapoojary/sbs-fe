@@ -159,14 +159,7 @@ export const bookingApi = createApi({
         }),
 
         updateBookingStatus: builder.mutation({
-            query: ({ id, status }) => {
-                const fd = new FormData();
-                fd.append("company", "1");
-                fd.append("id", id);
-                fd.append("status", status);
-                fd.append("panel", "outlet");
-                return { url: "/api/v1/bookings/update/payment-status", method: "POST", data: fd };
-            },
+            query: (formData) => ({ url: API.UPDATE_BOOKING_STATUS, method: "POST", data: formData }),
             invalidatesTags: ["Booking"],
         }),
 

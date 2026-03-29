@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, NavLink } from "react-router-dom";
-import { toggleTheme, selectThemeMode } from "../../../store/themeSlice";
-import { selectCurrentUser, logoutSuccess } from "../../../store/authSlice";
-import AuthService from "../../../services/auth.service";
-import logo from "../../../assets/images/logo.PNG";
+import { toggleTheme, selectThemeMode } from "store/themeSlice";
+import { selectCurrentUser, logoutSuccess } from "store/authSlice";
+import AuthService from "services/auth.service";
+import logo from "assets/images/logo.PNG";
 import "./Header.scss";
 
 const NAV_LINKS = [
@@ -24,6 +24,7 @@ const Header = () => {
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [userOpen, setUserOpen] = useState(false);
+    const userMenuRef = useRef(null);
 
     const initials =
         user?.name
@@ -39,32 +40,42 @@ const Header = () => {
         navigate("/login", { replace: true });
     }, [dispatch, navigate]);
 
+    // Close user dropdown on outside click
+    useEffect(() => {
+        if (!userOpen) return;
+        const handler = (e) => {
+            if (!userMenuRef.current?.contains(e.target)) setUserOpen(false);
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, [userOpen]);
+
     return (
         <header className="header">
-            <NavLink to="/booking" className="header-brand">
+            <NavLink to="/booking" className="brand">
                 <img src={logo} alt="spa" />
             </NavLink>
 
-            <nav className="header-nav">
+            <nav className="nav">
                 {NAV_LINKS.map(({ label, path }) => (
-                    <NavLink key={path} to={path} className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}>
+                    <NavLink key={path} to={path} className={({ isActive }) => (isActive ? "active" : "")}>
                         {label}
                     </NavLink>
                 ))}
             </nav>
 
-            <div className="header-actions">
-                <button className="btn-icon" title="Notifications">
+            <div className="actions">
+                <button className="icon-btn" title="Notifications">
                     <BellIcon />
                 </button>
 
-                <div className="user-menu">
-                    <button className="user-menu-trigger" onClick={() => setUserOpen((v) => !v)} title={user?.name}>
+                <div className="user-menu" ref={userMenuRef}>
+                    <button className="avatar-btn" onClick={() => setUserOpen((v) => !v)} title={user?.name}>
                         <div className="avatar">{initials}</div>
                     </button>
 
                     {userOpen && (
-                        <div className="user-dropdown">
+                        <div className="dropdown">
                             <div className="user-info">
                                 <strong>{user?.name || "User"}</strong>
                                 <span>{user?.role || "Staff"}</span>
@@ -95,7 +106,7 @@ const Header = () => {
                     )}
                 </div>
 
-                <button className="btn-icon hamburger" onClick={() => setMenuOpen((v) => !v)} aria-label="Menu">
+                <button className="icon-btn hamburger" onClick={() => setMenuOpen((v) => !v)} aria-label="Menu">
                     <HamburgerIcon />
                 </button>
             </div>
@@ -112,8 +123,6 @@ const Header = () => {
                     <div className="overlay" onClick={() => setMenuOpen(false)} />
                 </>
             )}
-
-            {userOpen && <div className="overlay transparent" onClick={() => setUserOpen(false)} />}
         </header>
     );
 };
