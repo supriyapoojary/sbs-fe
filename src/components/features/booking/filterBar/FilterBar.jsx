@@ -118,14 +118,14 @@ const FilterBar = () => {
                 {/* Filter — ref used for outside click detection */}
                 <div className="filter-wrap" ref={filterRef}>
                     <button className="btn btn-secondary btn-sm" onClick={() => setFilterOpen((v) => !v)}>
-                        <FilterIcon /> Filter
+                        Filter <FilterIcon />
                     </button>
                     {filterOpen && <FilterPanel onClose={() => setFilterOpen(false)} />}
                 </div>
 
                 {/* Date navigation */}
                 <div className="date-nav">
-                    <button className="btn btn-ghost btn-sm" onClick={() => dispatch(goToToday())}>
+                    <button className="btn btn-ghost btn-sm " onClick={() => dispatch(goToToday())}>
                         Today
                     </button>
                     <button className="btn btn-icon" onClick={() => dispatch(goToPrevDay())}>

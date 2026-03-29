@@ -2,6 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import baseQuery from "../api/baseQuery";
 import { API } from "../config/api.config";
 
+// Flatten booking from API shape to flat object for calendar rendering
 const getFirstBookingItem = (booking_item) => {
     if (!booking_item || typeof booking_item !== "object") return {};
     const firstKey = Object.keys(booking_item)[0];
@@ -29,8 +30,8 @@ const flattenBooking = (b) => {
         start_time: item.start_time,
         end_time: item.end_time,
         duration: item.duration,
-        room_id: item.room_id || item.room_items?.[0]?.room_id || null,
-        room_name: item.room_name || item.room_items?.[0]?.room_name || null,
+        room_id: item.room_items?.[0]?.room_id || item.room_id || null,
+        room_name: item.room_items?.[0]?.room_name || item.room_name || null,
         requested_person: item.requested_person,
         booking_item_id: item.id,
         _raw: b,
@@ -43,6 +44,8 @@ export const bookingApi = createApi({
     tagTypes: ["Booking"],
 
     endpoints: (builder) => ({
+        // Outlets — from outlet-timings
+        // Response: { data: { list: { outlet: { id, name } } } }
         getOutlets: builder.query({
             query: ({ outlet, start_date, end_date }) => ({
                 url: API.OUTLET_TIMINGS,
@@ -54,6 +57,8 @@ export const bookingApi = createApi({
             },
         }),
 
+        // Therapists
+        // Response: { data: { data: { list: { staffs: [...] } } } }
         getTherapists: builder.query({
             query: (params) => ({ url: API.THERAPISTS, params }),
             transformResponse: (res) => {
@@ -63,6 +68,8 @@ export const bookingApi = createApi({
             },
         }),
 
+        // Bookings
+        // Response: { data: { data: { list: { bookings: [...] } } } }
         getBookings: builder.query({
             query: (params) => ({ url: API.BOOKING_LIST, params }),
             transformResponse: (res) => {
@@ -73,11 +80,14 @@ export const bookingApi = createApi({
             providesTags: ["Booking"],
         }),
 
+        // Services
+        // Response: { data: { data: { list: { category: [{ services: [...] }] } } } }
         getServices: builder.query({
             query: (params) => ({ url: API.SERVICE_CATEGORY, params }),
             transformResponse: (res) => {
                 const categories = res?.data?.data?.list?.category;
                 if (!Array.isArray(categories)) return [];
+                // Flatten categories → services
                 return categories.flatMap((cat) =>
                     (cat.services || []).map((s) => ({
                         ...s,
@@ -88,7 +98,8 @@ export const bookingApi = createApi({
             },
         }),
 
-        // rooms API response shape is inconsistent — fallback chain handles all known variants
+        // Rooms — outlet goes in URL path
+        // Response shape varies — fallback chain handles all known variants
         getRooms: builder.query({
             query: ({ outlet, ...params }) => ({
                 url: `${API.ROOM_BOOKINGS}/outlet/${outlet}`,
@@ -96,18 +107,29 @@ export const bookingApi = createApi({
             }),
             transformResponse: (res) => {
                 const d = res?.data;
-                if (Array.isArray(d?.data?.data?.list)) return d.data.data.list;
-                if (Array.isArray(d?.data?.data)) return d.data.data;
-                if (Array.isArray(d?.data?.list)) return d.data.list;
-                if (Array.isArray(d?.data?.rooms)) return d.data.rooms;
-                if (Array.isArray(d?.data)) return d.data;
-                if (Array.isArray(d?.rooms)) return d.rooms;
-                if (Array.isArray(d?.list)) return d.list;
-                if (Array.isArray(d)) return d;
-                return [];
+                let list = [];
+                if (Array.isArray(d?.data?.data?.list)) list = d.data.data.list;
+                else if (Array.isArray(d?.data?.data)) list = d.data.data;
+                else if (Array.isArray(d?.data?.list)) list = d.data.list;
+                else if (Array.isArray(d?.data?.rooms)) list = d.data.rooms;
+                else if (Array.isArray(d?.data)) list = d.data;
+                else if (Array.isArray(d?.rooms)) list = d.rooms;
+                else if (Array.isArray(d?.list)) list = d.list;
+                else if (Array.isArray(d)) list = d;
+                // flatten rooms → items — booking API expects item_id not room_id
+                return list.flatMap((r) =>
+                    (r.items || []).map((item) => ({
+                        id: item.item_id,
+                        name: item.item_name || r.room_name,
+                        room_id: r.room_id,
+                        room_name: r.room_name,
+                    }))
+                );
             },
         }),
 
+        // Users / clients
+        // Response: { data: { data: { list: { users: [...] } } } }
         getUsers: builder.query({
             query: (params) => ({ url: API.USERS, params }),
             transformResponse: (res) => {
@@ -120,6 +142,7 @@ export const bookingApi = createApi({
             },
         }),
 
+        // Mutations
         createBooking: builder.mutation({
             query: (formData) => ({ url: API.CREATE_BOOKING, method: "POST", data: formData }),
             invalidatesTags: ["Booking"],
@@ -130,18 +153,30 @@ export const bookingApi = createApi({
             invalidatesTags: ["Booking"],
         }),
 
-        updateBookingStatus: builder.mutation({
-            query: (formData) => ({ url: "/api/v1/bookings/update/payment-status", method: "POST", data: formData }),
-            invalidatesTags: ["Booking"],
-        }),
-
         cancelBooking: builder.mutation({
             query: (formData) => ({ url: API.CANCEL_BOOKING, method: "POST", data: formData }),
             invalidatesTags: ["Booking"],
         }),
 
+        updateBookingStatus: builder.mutation({
+            query: ({ id, status }) => {
+                const fd = new FormData();
+                fd.append("company", "1");
+                fd.append("id", id);
+                fd.append("status", status);
+                fd.append("panel", "outlet");
+                return { url: "/api/v1/bookings/update/payment-status", method: "POST", data: fd };
+            },
+            invalidatesTags: ["Booking"],
+        }),
+
         deleteBooking: builder.mutation({
             query: (id) => ({ url: API.DELETE_BOOKING(id), method: "DELETE" }),
+            invalidatesTags: ["Booking"],
+        }),
+
+        rescheduleBooking: builder.mutation({
+            query: ({ id, data }) => ({ url: API.UPDATE_BOOKING(id), method: "POST", data }),
             invalidatesTags: ["Booking"],
         }),
     }),
@@ -156,7 +191,8 @@ export const {
     useGetUsersQuery,
     useCreateBookingMutation,
     useUpdateBookingMutation,
-    useUpdateBookingStatusMutation,
     useCancelBookingMutation,
+    useUpdateBookingStatusMutation,
     useDeleteBookingMutation,
+    useRescheduleBookingMutation,
 } = bookingApi;

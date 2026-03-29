@@ -22,12 +22,27 @@ import "./calendarView.scss";
 
 const isMobile = () => window.innerWidth <= 767;
 
-// Therapist column — memoized, only re-renders when its bookings change
 const TherapistColumn = memo(
-    ({ therapist, colBookings, left, width, totalHeight, onSlotClick, isSource, sourceSlotIndex, dropSlotIndex, dropDuration, interval }) => {
-        const step = interval / 15; // slots to skip: 1 for 15min, 2 for 30min, 4 for 60min
+    ({
+        therapist,
+        colBookings,
+        left,
+        width,
+        totalHeight,
+        onSlotClick,
+        isSource,
+        sourceSlotIndex,
+        dropSlotIndex,
+        dropDuration,
+        interval,
+        isUnavailable,
+    }) => {
+        const step = interval / 15;
         return (
-            <div className="therapist-column" style={{ position: "absolute", left, width, height: totalHeight }}>
+            <div
+                className={`therapist-column${isUnavailable ? " therapist-column--unavailable" : ""}`}
+                style={{ position: "absolute", left, width, height: totalHeight }}
+            >
                 {TIME_SLOTS.filter((_, i) => i % step === 0).map((slot) => {
                     const realIdx = TIME_SLOTS.indexOf(slot);
                     return (
@@ -63,11 +78,11 @@ TherapistColumn.displayName = "TherapistColumn";
 
 const CalendarView = () => {
     const dispatch = useDispatch();
-    const activeDate = useSelector(selectActiveDate); // YYYY-MM-DD
+    const activeDate = useSelector(selectActiveDate);
     const outletId = useSelector(selectActiveOutlet);
     const searchQuery = useSelector(selectSearchQuery);
     const interval = useSelector(selectDisplayInterval);
-    const filters = useSelector(selectFilters); // 15 | 30 | 60
+    const filters = useSelector(selectFilters);
 
     const bodyRef = useRef(null);
     const headerRef = useRef(null);
@@ -80,10 +95,8 @@ const CalendarView = () => {
         return () => window.removeEventListener("resize", fn);
     }, []);
 
-    // API date format: DD-MM-YYYY (as per Postman)
     const apiDate = dayjs(activeDate).format("DD-MM-YYYY");
 
-    // Therapists API
     const { data: therapistsRaw = [], isLoading: tLoading } = useGetTherapistsQuery({
         availability: 1,
         outlet: outletId,
@@ -96,7 +109,6 @@ const CalendarView = () => {
         leave: 0,
     });
 
-    // Bookings API
     const { data: bookingsRaw = [], isLoading: bLoading } = useGetBookingsQuery({
         daterange: `${apiDate} / ${apiDate}`,
         outlet: outletId,
@@ -105,11 +117,9 @@ const CalendarView = () => {
         pagination: 1,
     });
 
-    // Always ensure arrays — guards against unexpected API shapes
     const therapists = useMemo(() => (Array.isArray(therapistsRaw) ? therapistsRaw : []), [therapistsRaw]);
     const bookings = useMemo(() => (Array.isArray(bookingsRaw) ? bookingsRaw : []), [bookingsRaw]);
 
-    // Filter bookings by search
     const filtered = useMemo(() => {
         let result = bookings;
         if (filters.status?.length) {
@@ -124,7 +134,6 @@ const CalendarView = () => {
         return result;
     }, [bookings, searchQuery, filters.status]);
 
-    // Group bookings by therapist
     const byTherapist = useMemo(() => {
         const map = {};
         filtered.forEach((b) => {
@@ -190,7 +199,6 @@ const CalendarView = () => {
             onDragEnd={onDragEnd}
         >
             <div className="calendar-view">
-                {/* Mobile nav */}
                 {mobile && therapists.length > 0 && (
                     <div className="mobile-therapist-nav">
                         <button onClick={() => setMobileColIndex((i) => Math.max(0, i - 1))} disabled={mobileColIndex === 0}>
@@ -208,7 +216,6 @@ const CalendarView = () => {
                     </div>
                 )}
 
-                {/* Therapist header */}
                 <div className="calendar-header">
                     <div className="calendar-header__time-spacer" style={{ width: timeColWidth }}>
                         <span className="time-col-header">Time</span>
@@ -243,7 +250,6 @@ const CalendarView = () => {
                     </div>
                 </div>
 
-                {/* Calendar body */}
                 <div
                     className="calendar-body"
                     ref={bodyRef}
@@ -251,7 +257,6 @@ const CalendarView = () => {
                         if (headerRef.current) headerRef.current.scrollLeft = e.currentTarget.scrollLeft;
                     }}
                 >
-                    {/* Time column */}
                     <div className="time-column" style={{ width: timeColWidth, height: totalHeight }}>
                         {TIME_SLOTS.filter((s) => s.minute === 0).map((slot) => {
                             const ampm = slot.hour < 12 ? "AM" : "PM";
@@ -267,7 +272,6 @@ const CalendarView = () => {
                         })}
                     </div>
 
-                    {/* Grid */}
                     <div className="calendar-grid" style={{ width: virtualizer.getTotalSize(), height: totalHeight, position: "relative" }}>
                         {virtualizer.getVirtualItems().map((vCol) => {
                             const t = cols[vCol.index];
@@ -288,6 +292,7 @@ const CalendarView = () => {
                                     dropSlotIndex={isDropCol ? dropTarget.slotIndex : null}
                                     dropDuration={isDropCol ? activeBooking?.duration || 60 : 0}
                                     interval={interval}
+                                    isUnavailable={!t.is_available}
                                 />
                             );
                         })}

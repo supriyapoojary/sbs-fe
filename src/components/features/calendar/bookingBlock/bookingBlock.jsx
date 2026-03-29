@@ -9,8 +9,6 @@ import "./bookingBlock.scss";
 
 const normalizeTime = (t) => (t ? t.slice(0, 5) : "09:00");
 const normalizeStatus = (s) => (s || "").toLowerCase().replace(/[- ]/g, "_");
-
-// Minimum height so content is always visible — at least 4 slots (60px)
 const MIN_HEIGHT = SLOT_HEIGHT_PX * 4;
 
 const BookingBlock = memo(({ booking, therapist }) => {
@@ -25,10 +23,8 @@ const BookingBlock = memo(({ booking, therapist }) => {
 
     const startTime = normalizeTime(booking.start_time);
     const top = timeToSlotIndex(startTime) * SLOT_HEIGHT_PX;
-    // Use actual duration height but enforce minimum so content always fits
     const height = Math.max(durationToHeight(booking.duration || 60), MIN_HEIGHT);
     const isSmall = height < MIN_HEIGHT;
-
     const blockColor =
         status === "in_progress"
             ? IN_PROGRESS_COLOR
@@ -42,10 +38,12 @@ const BookingBlock = memo(({ booking, therapist }) => {
         dispatch(openPanel({ mode: "view", bookingId: booking.id }));
     };
 
+    const statusIcon = { confirmed: "C", completed: "D", cancelled: "X", in_progress: "I" }[status] || "C";
+
     return (
         <div
             ref={setNodeRef}
-            className={`booking-block booking-block--${status}${isSmall ? " booking-block--small" : ""}`}
+            className={`booking-block${isSmall ? " small" : ""} status-${status}`}
             style={{
                 top,
                 height,
@@ -63,60 +61,45 @@ const BookingBlock = memo(({ booking, therapist }) => {
             {...listeners}
             {...attributes}
         >
-            <div className="booking-block__content">
-                {/* Service name */}
-                <div className="booking-block__service">{booking.service_name}</div>
+            <div className="content">
+                <div className="service">{booking.service_name}</div>
 
-                {/* Phone + name */}
-                <div className="booking-block__client">
+                <div className="client">
                     {status === "in_progress" ? (
-                        <span className="booking-block__in-progress">In progress</span>
+                        <span className="in-progress">In progress</span>
                     ) : (
                         <>
-                            <span className="booking-block__phone">{booking.mobile_number}</span>
-                            <span className="booking-block__name">{booking.customer_name}</span>
+                            <span className="phone">{booking.mobile_number}</span>
+                            <span className="name">{booking.customer_name}</span>
                         </>
                     )}
                 </div>
 
-                {/* Icons row */}
-                <div className="booking-block__icons">
-                    <span className={`booking-block__icon booking-block__icon--${status}`} title={booking.status}>
-                        {status === "confirmed"
-                            ? "C"
-                            : status === "completed"
-                              ? "D"
-                              : status === "cancelled"
-                                ? "X"
-                                : status === "in_progress"
-                                  ? "I"
-                                  : "C"}
+                <div className="icons">
+                    <span className={`icon icon--${status}`} title={booking.status}>
+                        {statusIcon}
                     </span>
 
                     {booking.requested_person === 1 && (
-                        <span
-                            className="booking-block__icon"
-                            style={{ background: getTherapistColor(therapist?.gender) }}
-                            title="Requested Therapist"
-                        >
+                        <span className="icon" style={{ background: getTherapistColor(therapist?.gender) }} title="Requested Therapist">
                             T
                         </span>
                     )}
 
                     {booking.source && (
-                        <span className="booking-block__icon booking-block__icon--source" title={booking.source}>
+                        <span className="icon icon--source" title={booking.source}>
                             {booking.source === "Walk-in" ? "W" : booking.source === "WhatsApp" ? "A" : "P"}
                         </span>
                     )}
 
                     {booking.room_id && (
-                        <span className="booking-block__icon booking-block__icon--room" title={booking.room_name}>
+                        <span className="icon icon--room" title={booking.room_name}>
                             R
                         </span>
                     )}
 
                     {booking.note && (
-                        <span className="booking-block__icon booking-block__icon--note" title={booking.note}>
+                        <span className="icon icon--note" title={booking.note}>
                             N
                         </span>
                     )}

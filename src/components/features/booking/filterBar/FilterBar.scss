@@ -1,6 +1,5 @@
 @use "../../../../styles/mixins" as *;
 
-// Figma layout: [Left: outlet+interval] [Center: search] [Right: filter+date]
 .filter-bar {
     display: flex;
     align-items: center;
@@ -26,11 +25,9 @@
     flex-shrink: 0;
 }
 
-// Search takes all remaining space in center
 .filter-center {
     flex: 1;
     min-width: 0;
-
     @include mobile {
         order: 3;
         width: 100%;
@@ -44,7 +41,7 @@
     flex-shrink: 0;
 }
 
-// ── Dropdown ─────────────────────────────────────────────────────────
+// Dropdown
 .fb-dropdown {
     position: relative;
 
@@ -113,16 +110,16 @@
     }
 }
 
-// ── Search — center, pill shape like Figma ────────────────────────────
+// Search
 .fb-search {
     display: flex;
     align-items: center;
     gap: 8px;
     height: 34px;
     padding: 0 14px;
-    background: var(--bg-subtle);
+    background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: 4px;
     transition:
         border-color 0.15s,
         box-shadow 0.15s;
@@ -130,7 +127,6 @@
     &:focus-within {
         border-color: var(--brand);
         box-shadow: 0 0 0 3px var(--brand-light);
-        background: var(--bg);
     }
 
     svg {
@@ -157,11 +153,20 @@
     }
 }
 
-// ── Date nav ─────────────────────────────────────────────────────────
+// Date nav
 .date-nav {
     display: flex;
     align-items: center;
     gap: 2px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--bg-subtle);
+
+    .btn:hover,
+    .date-label:hover,
+    .btn-ghost:hover:not(:disabled) {
+        background-color: var(--bg);
+        border-radius: 0;
+    }
 }
 
 .date-label {
@@ -184,13 +189,11 @@
     }
 }
 
-// ── Filter wrap ──────────────────────────────────────────────────────
 .filter-wrap {
     position: relative;
     flex-shrink: 0;
 }
 
-// Hidden date input — off-screen, triggered via ref
 .date-input-hidden {
     position: absolute;
     opacity: 0;
@@ -198,4 +201,8 @@
     height: 0;
     pointer-events: none;
     overflow: hidden;
+}
+
+.btn-icon {
+    border: none;
 }
