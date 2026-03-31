@@ -104,7 +104,7 @@ export const {
     clearFilters,
 } = uiSlice.actions;
 
-// ─── Selectors ─────────────────────────────────────────────────────
+// Selectors
 export const selectUI = (s) => s.ui;
 export const selectIsPanelOpen = (s) => s.ui.isPanelOpen;
 export const selectPanelMode = (s) => s.ui.panelMode;

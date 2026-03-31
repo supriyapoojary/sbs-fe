@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import AuthService from "../../../services/auth.service";
+import AuthService from "services/auth.service";
 import "./NotFound.scss";
 
 const NotFound = () => {

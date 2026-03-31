@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useUpdateBookingMutation, bookingApi } from "../store/bookingApi";
-import { selectActiveDate, selectActiveOutlet } from "../store/uiSlice";
-import { SLOT_HEIGHT_PX, THERAPIST_COL_WIDTH, TIME_COL_WIDTH, slotIndexToTime } from "../constants/calendarConstants";
+import { useUpdateBookingMutation, bookingApi } from "store/bookingApi";
+import { selectActiveDate, selectActiveOutlet } from "store/uiSlice";
+import { SLOT_HEIGHT_PX, THERAPIST_COL_WIDTH, TIME_COL_WIDTH, slotIndexToTime } from "constants/calendarConstants";
 import dayjs from "dayjs";
 import logger from "../utils/logger";
 import toast from "react-hot-toast";

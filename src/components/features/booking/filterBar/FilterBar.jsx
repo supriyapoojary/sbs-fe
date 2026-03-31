@@ -12,8 +12,8 @@ import {
     goToNextDay,
     goToToday,
     setActiveDate,
-} from "../../../../store/uiSlice";
-import { useGetOutletsQuery } from "../../../../store/bookingApi";
+} from "store/uiSlice";
+import { useGetOutletsQuery } from "store/bookingApi";
 import FilterPanel from "./FilterPanel";
 import "./FilterBar.scss";
 

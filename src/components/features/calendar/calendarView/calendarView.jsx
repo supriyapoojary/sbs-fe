@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
-import { useGetBookingsQuery, useGetTherapistsQuery } from "../../../../store/bookingApi";
-import { selectActiveDate, selectActiveOutlet, selectSearchQuery, selectDisplayInterval, selectFilters, openPanel } from "../../../../store/uiSlice";
+import { useGetBookingsQuery, useGetTherapistsQuery } from "store/bookingApi";
+import { selectActiveDate, selectActiveOutlet, selectSearchQuery, selectDisplayInterval, selectFilters, openPanel } from "store/uiSlice";
 import {
     TIME_SLOTS,
     SLOT_HEIGHT_PX,
@@ -13,11 +13,11 @@ import {
     TOTAL_SLOTS,
     HOUR_HEIGHT_PX,
     timeToSlotIndex,
-} from "../../../../constants/calendarConstants";
-import { getTherapistColor, getTherapistBg } from "../../../../constants/therapistColors";
+} from "constants/calendarConstants";
+import { getTherapistColor, getTherapistBg } from "constants/therapistColors";
 import BookingBlock from "../bookingBlock/bookingBlock";
 import CalendarDndContext from "../calendarDnd/CalendarDndContext";
-import useBookingDrag from "../../../../hooks/useBookingDrag";
+import useBookingDrag from "hooks/useBookingDrag";
 import "./calendarView.scss";
 
 const isMobile = () => window.innerWidth <= 767;
@@ -61,10 +61,7 @@ const TherapistColumn = memo(
                 {dropSlotIndex != null && (
                     <div
                         className="drop-preview"
-                        style={{
-                            top: dropSlotIndex * SLOT_HEIGHT_PX,
-                            height: Math.max((dropDuration / 15) * SLOT_HEIGHT_PX, SLOT_HEIGHT_PX * 4),
-                        }}
+                        style={{ top: dropSlotIndex * SLOT_HEIGHT_PX, height: Math.max((dropDuration / 15) * SLOT_HEIGHT_PX, SLOT_HEIGHT_PX * 4) }}
                     />
                 )}
                 {colBookings.map((booking) => (
@@ -75,6 +72,16 @@ const TherapistColumn = memo(
     }
 );
 TherapistColumn.displayName = "TherapistColumn";
+
+// Match by room_name — booking room_items don't carry item_category
+const matchesResource = (booking, resource) => {
+    if (!resource) return true;
+    const roomName = (booking.room_name || "").toLowerCase();
+    if (resource === "Sofa") return roomName.includes("sofa");
+    if (resource === "Monkey Chair") return roomName.includes("monkey");
+    if (resource === "Rooms") return roomName.length > 0 && !roomName.includes("sofa") && !roomName.includes("monkey");
+    return false;
+};
 
 const CalendarView = () => {
     const dispatch = useDispatch();
@@ -125,6 +132,9 @@ const CalendarView = () => {
         if (filters.status?.length) {
             result = result.filter((b) => filters.status.includes(b.status));
         }
+        if (filters.resource) {
+            result = result.filter((b) => matchesResource(b, filters.resource));
+        }
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
             result = result.filter(
@@ -132,7 +142,7 @@ const CalendarView = () => {
             );
         }
         return result;
-    }, [bookings, searchQuery, filters.status]);
+    }, [bookings, searchQuery, filters.status, filters.resource]);
 
     const byTherapist = useMemo(() => {
         const map = {};
@@ -149,6 +159,7 @@ const CalendarView = () => {
         () => (mobile ? [filteredTherapists[mobileColIndex]].filter(Boolean) : filteredTherapists),
         [mobile, filteredTherapists, mobileColIndex]
     );
+
     const timeColWidth = mobile ? 52 : TIME_COL_WIDTH;
     const colWidth = mobile ? window.innerWidth - timeColWidth : THERAPIST_COL_WIDTH;
 
@@ -172,7 +183,11 @@ const CalendarView = () => {
             const padded = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
             const slotDateTime = dayjs(`${activeDate} ${padded}`, "YYYY-MM-DD HH:mm");
             if (slotDateTime.isBefore(dayjs())) {
-                toast.error("Cannot create bookings in the past. Please use current or future dates.");
+                toast.error("Cannot create bookings in the past.");
+                return;
+            }
+            if (Number(h) < 9) {
+                toast.error("Bookings cannot be created before 9:00 AM.");
                 return;
             }
             dispatch(openPanel({ mode: "create", prefill: { therapist_id: therapistId, start_time: padded, date: activeDate } }));

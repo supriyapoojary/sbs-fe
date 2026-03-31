@@ -2,7 +2,7 @@
 @use "light-theme";
 @use "dark-theme";
 
-// ── Reset ────────────────────────────────────────────────────────────
+// Reset
 *,
 *::before,
 *::after {
@@ -32,17 +32,19 @@ a {
     color: var(--brand);
     text-decoration: none;
 }
+
 button,
 input,
 select,
 textarea {
     font-family: inherit;
 }
+
 * {
     @include scrollbar;
 }
 
-// ── App shell ────────────────────────────────────────────────────────
+// App shell
 .app-shell {
     display: flex;
     flex-direction: column;
@@ -57,8 +59,7 @@ textarea {
     flex-direction: column;
 }
 
-// ── Buttons — defined once, used everywhere ───────────────────────────
-// Usage: <button class="btn">  <button class="btn btn-outline">  etc.
+// Buttons
 .btn {
     display: inline-flex;
     align-items: center;
@@ -82,7 +83,6 @@ textarea {
         cursor: not-allowed;
     }
 
-    // Variants
     &-primary {
         background: var(--brand);
         color: var(--text-on-brand);
@@ -117,7 +117,6 @@ textarea {
         }
     }
 
-    // Sizes
     &-sm {
         padding: 4px 10px;
         font-size: 12px;
@@ -131,6 +130,7 @@ textarea {
     &-full {
         width: 100%;
     }
+
     &-icon {
         width: 30px;
         height: 30px;
@@ -147,7 +147,7 @@ textarea {
     }
 }
 
-// ── Form ─────────────────────────────────────────────────────────────
+// Form
 .form-group {
     display: flex;
     flex-direction: column;
@@ -172,7 +172,6 @@ textarea {
 select.input {
     cursor: pointer;
 }
-
 textarea.input {
     resize: vertical;
     min-height: 72px;
@@ -184,7 +183,7 @@ textarea.input {
     margin-top: 2px;
 }
 
-// ── Alert / error banner ─────────────────────────────────────────────
+// Alert
 .alert {
     @include flex-start;
     gap: 6px;
@@ -204,7 +203,7 @@ textarea.input {
     }
 }
 
-// ── Overlay ──────────────────────────────────────────────────────────
+// Overlay
 .overlay {
     position: fixed;
     inset: 0;
@@ -213,7 +212,7 @@ textarea.input {
     animation: fadeIn 0.15s ease;
 }
 
-// ── Spinner ──────────────────────────────────────────────────────────
+// Spinner
 .spinner {
     width: 16px;
     height: 16px;
@@ -225,7 +224,7 @@ textarea.input {
     flex-shrink: 0;
 }
 
-// ── Animations ───────────────────────────────────────────────────────
+// Animations
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -236,6 +235,7 @@ textarea.input {
         transform: translateY(0);
     }
 }
+
 @keyframes slideInRight {
     from {
         transform: translateX(100%);
@@ -244,11 +244,13 @@ textarea.input {
         transform: translateX(0);
     }
 }
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
+
 @keyframes pulse {
     0%,
     100% {

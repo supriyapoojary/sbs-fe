@@ -1,4 +1,4 @@
-// ── Breakpoints ──────────────────────────────────────────────────────
+// Breakpoints
 $mobile: 767px;
 $tablet: 1023px;
 
@@ -18,7 +18,7 @@ $tablet: 1023px;
     }
 }
 
-// ── Layout ───────────────────────────────────────────────────────────
+// Layout
 @mixin flex($justify: flex-start, $align: center) {
     display: flex;
     align-items: $align;
@@ -35,14 +35,14 @@ $tablet: 1023px;
     @include flex(flex-start);
 }
 
-// ── Text ─────────────────────────────────────────────────────────────
+// Text
 @mixin truncate {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-// ── Scrollbar — thickens on hover for easier grabbing ────────────────
+// Scrollbar
 @mixin scrollbar($size: 6px) {
     &::-webkit-scrollbar {
         width: $size;
@@ -64,7 +64,7 @@ $tablet: 1023px;
     }
 }
 
-// ── Input ────────────────────────────────────────────────────────────
+// Input
 @mixin input {
     width: 100%;
     padding: 8px 10px;
@@ -79,7 +79,7 @@ $tablet: 1023px;
         box-shadow 0.15s;
     @include mobile {
         font-size: 16px;
-    } // prevent iOS zoom
+    }
 
     &::placeholder {
         color: var(--text-muted);
@@ -90,7 +90,7 @@ $tablet: 1023px;
     }
 }
 
-// ── Panel ────────────────────────────────────────────────────────────
+// Panel
 @mixin panel {
     position: fixed;
     top: 0;
@@ -123,7 +123,7 @@ $tablet: 1023px;
     }
 }
 
-// ── Safe area (iPhone home bar) ───────────────────────────────────────
+// Safe area
 @mixin safe-bottom {
     padding-bottom: max(12px, env(safe-area-inset-bottom));
 }

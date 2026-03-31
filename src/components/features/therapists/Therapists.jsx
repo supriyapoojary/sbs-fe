@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useGetTherapistsQuery } from "../../../store/bookingApi";
-import { selectActiveOutlet } from "../../../store/uiSlice";
-import { getTherapistBg, getTherapistColor } from "../../../constants/therapistColors";
+import { useGetTherapistsQuery } from "store/bookingApi";
+import { selectActiveOutlet } from "store/uiSlice";
+import { getTherapistBg, getTherapistColor } from "constants/therapistColors";
 import dayjs from "dayjs";
 import "./Therapists.scss";
 

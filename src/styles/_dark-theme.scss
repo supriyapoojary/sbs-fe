@@ -1,32 +1,33 @@
 [data-theme="dark"] {
-    // ── Brand ────────────────────────────────────────────────────────
-    --brand: rgba(60, 34, 18, 1); // deeper espresso for dark mode
+    // Brand
+    --brand: rgba(60, 34, 18, 1);
     --brand-hover: rgba(60, 34, 18, 1);
     --brand-light: rgba(255, 255, 255, 0.06);
 
-    // ── Backgrounds ──────────────────────────────────────────────────
+    // Backgrounds
     --bg: #1a1b1e;
     --bg-subtle: #25262b;
     --bg-muted: #2c2e33;
     --overlay: rgba(0, 0, 0, 0.6);
 
-    // ── Text ─────────────────────────────────────────────────────────
+    // Text
     --text: #e8e8f0;
     --text-sub: #a6a7ab;
     --text-muted: #6c6f75;
     --text-on-brand: #ffffff;
 
-    // ── Border ───────────────────────────────────────────────────────
+    // Border
     --border: #373a40;
     --border-strong: #4a4d55;
+    --border-15min: #2a2a2a;
 
-    // ── Status ───────────────────────────────────────────────────────
+    // Status
     --success: #4ade80;
     --warning: #fb923c;
     --danger: #f87171;
     --info: #60a5fa;
 
-    // ── Booking blocks ────────────────────────────────────────────────
+    // Booking blocks
     --block-blue: #1e3a5f;
     --block-blue-bd: #60a5fa;
     --block-pink: #4a1942;
@@ -38,21 +39,18 @@
     --block-amber: #451a03;
     --block-amber-bd: #fb923c;
 
-    // ── Therapist gender ─────────────────────────────────────────────
+    // Therapist gender
     --female: #f472b6;
     --male: #60a5fa;
 
-    // ── Calendar ─────────────────────────────────────────────────────
+    // Calendar
     --slot-hover: #25262b;
 
-    // ── Panel ────────────────────────────────────────────────────────
+    // Panel
     --panel-width: 380px;
     --panel-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
 
-    // ── Grid lines
-    --border-15min: #2a2a2a; // subtle 15-min lines in dark mode
-
-    // ── Shadow ───────────────────────────────────────────────────────
+    // Shadows
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);

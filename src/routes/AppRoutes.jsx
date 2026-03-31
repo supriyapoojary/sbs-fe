@@ -2,17 +2,17 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { selectIsAuthenticated } from "../store/authSlice";
-import Header from "../components/common/header/Header";
-import ErrorBoundary from "../components/ui/ErrorBoundary";
-import FilterBar from "../components/features/booking/filterBar/FilterBar";
-import CalendarView from "../components/features/calendar/calendarView/calendarView";
+import { selectIsAuthenticated } from "store/authSlice";
+import Header from "components/common/header/Header";
+import ErrorBoundary from "components/ui/ErrorBoundary";
+import FilterBar from "components/features/booking/filterBar/FilterBar";
+import CalendarView from "components/features/calendar/calendarView/calendarView";
 
-const Login = lazy(() => import("../components/common/login/Login"));
-const NotFound = lazy(() => import("../components/common/notFound/NotFound"));
-const Admin = lazy(() => import("../components/features/admin/Admin"));
-const TherapistsPage = lazy(() => import("../components/features/therapists/Therapists"));
-const BookingPanel = lazy(() => import("../components/features/booking/bookingPanel/BookingPanel"));
+const Login = lazy(() => import("components/common/login/Login"));
+const NotFound = lazy(() => import("components/common/notFound/NotFound"));
+const Admin = lazy(() => import("components/features/admin/Admin"));
+const TherapistsPage = lazy(() => import("components/features/therapists/Therapists"));
+const BookingPanel = lazy(() => import("components/features/booking/bookingPanel/BookingPanel"));
 
 const PageLoader = () => (
     <div

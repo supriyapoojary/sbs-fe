@@ -1,6 +1,5 @@
 @use "../../../../styles/mixins" as *;
 
-// ── Backdrop — full screen overlay ────────────────────────────────────
 .cancel-dialog-backdrop {
     position: fixed;
     inset: 0;
@@ -12,7 +11,6 @@
     padding: 16px;
 }
 
-// ── Dialog card ───────────────────────────────────────────────────────
 .cancel-dialog {
     background: var(--bg);
     border-radius: 12px;
@@ -27,13 +25,13 @@
         background: var(--border);
         border-radius: 99px;
         margin-bottom: 20px;
-    }
 
-    &__progress-bar {
-        height: 100%;
-        width: 40%;
-        background: var(--brand);
-        border-radius: 99px;
+        &-bar {
+            height: 100%;
+            width: 40%;
+            background: var(--brand);
+            border-radius: 99px;
+        }
     }
 
     &__title {
@@ -42,7 +40,6 @@
         color: var(--text);
         margin-bottom: 6px;
     }
-
     &__subtitle {
         font-size: 13px;
         color: var(--text-sub);
@@ -60,7 +57,6 @@
         display: flex;
         gap: 10px;
 
-        // Both buttons share equal width
         .btn-secondary,
         .btn-primary {
             flex: 1;
@@ -68,7 +64,7 @@
     }
 }
 
-// ── Cancel option row ─────────────────────────────────────────────────
+// Cancel option row
 .cancel-option {
     display: flex;
     align-items: flex-start;
@@ -84,7 +80,6 @@
     &:hover {
         background: var(--bg-subtle);
     }
-
     &--selected {
         border-color: var(--brand);
         background: var(--brand-light);
@@ -104,13 +99,11 @@
         flex-direction: column;
         gap: 3px;
     }
-
     &__label {
         font-size: 13px;
         font-weight: 500;
         color: var(--text);
     }
-
     &__desc {
         font-size: 11px;
         color: var(--text-muted);
@@ -118,16 +111,13 @@
     }
 }
 
-// ── Buttons used in this component ────────────────────────────────────
-.btn-primary {
+// Shared button base
+%btn-base {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     padding: 10px 16px;
-    background: var(--brand);
-    color: var(--text-on-brand);
-    border: none;
     border-radius: 6px;
     font-size: 13px;
     font-weight: 500;
@@ -135,36 +125,31 @@
     cursor: pointer;
     transition: background 0.15s;
 
-    &:hover:not(:disabled) {
-        background: var(--brand-hover);
-    }
     &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
 }
 
+.btn-primary {
+    @extend %btn-base;
+    background: var(--brand);
+    color: var(--text-on-brand);
+    border: none;
+
+    &:hover:not(:disabled) {
+        background: var(--brand-hover);
+    }
+}
+
 .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 10px 16px;
+    @extend %btn-base;
     background: var(--bg);
     color: var(--text);
     border: 1px solid var(--border);
     border-radius: 4px;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 0.15s;
 
     &:hover:not(:disabled) {
         background: var(--bg-muted);
-    }
-    &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
     }
 }

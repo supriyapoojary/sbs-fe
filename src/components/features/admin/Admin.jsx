@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../../store/authSlice";
+import { selectCurrentUser } from "store/authSlice";
 import "./Admin.scss";
 
 const Admin = () => {

@@ -10,10 +10,10 @@ import {
     useGetTherapistsQuery,
     useGetUsersQuery,
     useGetOutletsQuery,
-} from "../../../../store/bookingApi";
-import { closePanel, selectActiveDate, selectActiveOutlet, selectPrefill } from "../../../../store/uiSlice";
-import { selectCurrentUser } from "../../../../store/authSlice";
-import logger from "../../../../utils/logger";
+} from "store/bookingApi";
+import { closePanel, selectActiveDate, selectActiveOutlet, selectPrefill } from "store/uiSlice";
+import { selectCurrentUser } from "store/authSlice";
+import logger from "utils/logger";
 import toast from "react-hot-toast";
 import "./BookingFormMode.scss";
 
@@ -155,6 +155,11 @@ const BookingFormMode = ({ booking, mode }) => {
         const bookingDateTime = dayjs(`${data.date} ${data.start_time}`, "YYYY-MM-DD HH:mm");
         if (bookingDateTime.isBefore(dayjs())) {
             toast.error("Cannot save a booking in the past.");
+            return;
+        }
+        const [startHour] = data.start_time.split(":").map(Number);
+        if (startHour < 9) {
+            toast.error("Bookings cannot be created before 9:00 AM.");
             return;
         }
         try {

@@ -2,9 +2,9 @@ import React, { memo } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { useDispatch } from "react-redux";
-import { openPanel } from "../../../../store/uiSlice";
-import { durationToHeight, timeToSlotIndex, SLOT_HEIGHT_PX } from "../../../../constants/calendarConstants";
-import { getTherapistColor, getClientBlockColor, IN_PROGRESS_COLOR } from "../../../../constants/therapistColors";
+import { openPanel } from "store/uiSlice";
+import { durationToHeight, timeToSlotIndex, SLOT_HEIGHT_PX } from "constants/calendarConstants";
+import { getTherapistColor, getClientBlockColor, IN_PROGRESS_COLOR } from "constants/therapistColors";
 import "./bookingBlock.scss";
 
 const normalizeTime = (t) => (t ? t.slice(0, 5) : "09:00");

@@ -1,9 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilters, clearFilters, selectFilters } from "../../../../store/uiSlice";
+import { setFilters, clearFilters, selectFilters } from "store/uiSlice";
 import "./FilterPanel.scss";
 
-// ids must match exact API status values
 const STATUSES = [
     { id: "Confirmed", label: "Confirmed" },
     { id: "Unconfirmed", label: "Unconfirmed" },
@@ -25,6 +24,7 @@ const FilterPanel = ({ onClose }) => {
 
     const group = filters.group || "all";
     const statuses = filters.status?.length ? filters.status : DEFAULT_STATUSES;
+    const resource = filters.resource || null;
 
     const setGroup = (g) => dispatch(setFilters({ group: g }));
 
@@ -32,6 +32,8 @@ const FilterPanel = ({ onClose }) => {
         const updated = statuses.includes(id) ? statuses.filter((x) => x !== id) : [...statuses, id];
         dispatch(setFilters({ status: updated }));
     };
+
+    const setResource = (r) => dispatch(setFilters({ resource: resource === r ? null : r }));
 
     const handleClear = () => {
         dispatch(clearFilters());
@@ -56,7 +58,8 @@ const FilterPanel = ({ onClose }) => {
                 <h4>Resources</h4>
                 {RESOURCES.map((r) => (
                     <label key={r} className="radio-row">
-                        <input type="radio" name="resource" value={r} /> {r}
+                        <input type="radio" name="resource" value={r} checked={resource === r} onChange={() => setResource(r)} />
+                        {r}
                     </label>
                 ))}
             </section>

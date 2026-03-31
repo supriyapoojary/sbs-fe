@@ -1,8 +1,8 @@
 import React, { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectIsPanelOpen, selectPanelMode, selectSelectedId, closePanel, setPanelMode } from "../../../../store/uiSlice";
-import { selectActiveDate, selectActiveOutlet } from "../../../../store/uiSlice";
-import { useGetBookingsQuery } from "../../../../store/bookingApi";
+import { selectIsPanelOpen, selectPanelMode, selectSelectedId, closePanel, setPanelMode } from "store/uiSlice";
+import { selectActiveDate, selectActiveOutlet } from "store/uiSlice";
+import { useGetBookingsQuery } from "store/bookingApi";
 import CancelDialog from "../cancelDialog/CancelDialog";
 import dayjs from "dayjs";
 import "./BookingPanel.scss";
@@ -23,18 +23,22 @@ const BookingPanel = () => {
     const [showCancelDialog, setShowCancelDialog] = useState(false);
     const dotsRef = useRef(null);
 
-    const apiDate = dayjs(bookingDate).format("DD-MM-YYYY");
+    const queryDate = dayjs(bookingDate).format("DD-MM-YYYY");
 
-    const { data: bookings } = useGetBookingsQuery({
-        daterange: `${apiDate} / ${apiDate}`,
-        outlet: outletId,
-        panel: "outlet",
-        view_type: "calendar",
-        pagination: 1,
-    });
+    const { data: bookings } = useGetBookingsQuery(
+        {
+            daterange: `${queryDate} / ${queryDate}`,
+            outlet: outletId,
+            panel: "outlet",
+            view_type: "calendar",
+            pagination: 1,
+        },
+        { skip: !isOpen || !selectedId }
+    );
 
-    const booking = Array.isArray(bookings) ? bookings.find((b) => b.id === selectedId) : undefined;
+    const booking = Array.isArray(bookings) ? bookings.find((b) => Number(b.id) === Number(selectedId)) : undefined;
 
+    // Update queryDate when booking's own date is known
     useEffect(() => {
         if (booking?.service_date) {
             const d = dayjs(booking.service_date, "DD-MM-YYYY");
@@ -42,6 +46,7 @@ const BookingPanel = () => {
         }
     }, [booking?.service_date]);
 
+    // Reset to activeDate when opening a new booking
     useEffect(() => {
         if (isOpen) setBookingDate(activeDate);
     }, [isOpen, selectedId]);
@@ -96,7 +101,7 @@ const BookingPanel = () => {
 
                 <div className="booking-panel__body">
                     <Suspense fallback={<PanelSkeleton />}>
-                        {panelMode === "view" && <BookingViewMode booking={booking} />}
+                        {panelMode === "view" && (booking ? <BookingViewMode booking={booking} /> : <PanelSkeleton />)}
                         {(panelMode === "create" || panelMode === "edit") && (
                             <BookingFormMode key={`${booking?.id}-${panelMode}`} booking={booking} mode={panelMode} />
                         )}

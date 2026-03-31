@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../../store/authSlice";
-import AuthService from "../../../services/auth.service";
-import logger from "../../../utils/logger";
-import logo from "../../../assets/images/flower.png";
+import { loginSuccess } from "store/authSlice";
+import AuthService from "services/auth.service";
+import logger from "utils/logger";
+import logo from "assets/images/flower.png";
 import "./Login.scss";
 
 const Login = () => {
