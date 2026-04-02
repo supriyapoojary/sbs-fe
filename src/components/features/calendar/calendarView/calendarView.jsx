@@ -102,6 +102,11 @@ const CalendarView = () => {
         return () => window.removeEventListener("resize", fn);
     }, []);
 
+    useEffect(() => {
+        if (bodyRef.current) bodyRef.current.scrollLeft = 0;
+        if (headerRef.current) headerRef.current.scrollLeft = 0;
+    }, [activeDate]);
+
     const apiDate = dayjs(activeDate).format("DD-MM-YYYY");
 
     const { data: therapistsRaw = [], isLoading: tLoading } = useGetTherapistsQuery({
