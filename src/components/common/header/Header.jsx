@@ -120,7 +120,7 @@ const Header = () => {
                             </NavLink>
                         ))}
                     </div>
-                    <div className="overlay" onClick={() => setMenuOpen(false)} />
+                    <div style={{ position: "fixed", inset: 0, zIndex: 99, background: "var(--overlay)" }} onClick={() => setMenuOpen(false)} />
                 </>
             )}
         </header>

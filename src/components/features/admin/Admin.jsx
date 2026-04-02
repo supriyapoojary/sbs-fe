@@ -14,7 +14,7 @@ const Admin = () => {
                 <p>
                     Welcome, <strong>{user?.name || "Admin"}</strong>. Admin content goes here
                 </p>
-                <Link to="/booking" style={{ fontSize: 13, color: "var(--brand)" }}>
+                <Link to="/booking" style={{ fontSize: 13, color: "var(--text-sub)" }}>
                     ← Back to Booking Page
                 </Link>
             </div>
