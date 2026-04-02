@@ -121,7 +121,7 @@ const CalendarView = () => {
         outlet: outletId,
         panel: "outlet",
         view_type: "calendar",
-        pagination: 1,
+        pagination: 0, // 1 gives only first 20 bookings
     });
 
     const therapists = useMemo(() => (Array.isArray(therapistsRaw) ? therapistsRaw : []), [therapistsRaw]);
