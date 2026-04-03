@@ -1,9 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import baseQuery from "../api/baseQuery";
 import { API } from "../config/api.config";
-import { MOCK_BOOKINGS, MOCK_DATE } from "../api/mockBookings";
-
-const LOAD_TEST = false;
 
 // Flatten booking from API shape to flat object for calendar rendering
 const getFirstBookingItem = (booking_item) => {
@@ -75,12 +72,7 @@ export const bookingApi = createApi({
         // Response: { data: { data: { list: { bookings: [...] } } } }
         getBookings: builder.query({
             query: (params) => ({ url: API.BOOKING_LIST, params }),
-            transformResponse: (res, meta, params) => {
-                // ← params is 3rd arg
-                if (LOAD_TEST && params?.daterange?.startsWith(MOCK_DATE)) {
-                    return MOCK_BOOKINGS;
-                }
-
+            transformResponse: (res) => {
                 const bookings = res?.data?.data?.list?.bookings;
                 if (!Array.isArray(bookings)) return [];
                 return bookings.map(flattenBooking);
