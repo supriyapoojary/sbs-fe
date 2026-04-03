@@ -97,7 +97,7 @@ const useBookingDrag = ({ therapists, gridRef, timeColWidth = TIME_COL_WIDTH }) 
                 outlet: outletId,
                 panel: "outlet",
                 view_type: "calendar",
-                pagination: 1,
+                pagination: 0,
             };
 
             const patchResult = dispatch(

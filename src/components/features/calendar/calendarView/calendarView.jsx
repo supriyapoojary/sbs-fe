@@ -219,17 +219,25 @@ const CalendarView = () => {
             onDragEnd={onDragEnd}
         >
             <div className="calendar-view">
-                {mobile && therapists.length > 0 && (
+                {mobile && filteredTherapists.length > 0 && (
                     <div className="mobile-therapist-nav">
                         <button onClick={() => setMobileColIndex((i) => Math.max(0, i - 1))} disabled={mobileColIndex === 0}>
                             ‹
                         </button>
-                        <span>
-                            {therapists[mobileColIndex]?.name} ({mobileColIndex + 1}/{therapists.length})
-                        </span>
+                        <select
+                            className="mobile-therapist-select"
+                            value={mobileColIndex}
+                            onChange={(e) => setMobileColIndex(Number(e.target.value))}
+                        >
+                            {filteredTherapists.map((t, i) => (
+                                <option key={t.id} value={i}>
+                                    {i + 1}. {t.name || `Therapist ${t.id}`}
+                                </option>
+                            ))}
+                        </select>
                         <button
-                            onClick={() => setMobileColIndex((i) => Math.min(therapists.length - 1, i + 1))}
-                            disabled={mobileColIndex === therapists.length - 1}
+                            onClick={() => setMobileColIndex((i) => Math.min(filteredTherapists.length - 1, i + 1))}
+                            disabled={mobileColIndex === filteredTherapists.length - 1}
                         >
                             ›
                         </button>

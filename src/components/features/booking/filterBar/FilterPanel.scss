@@ -1,5 +1,19 @@
 @use "../../../../styles/mixins" as *;
 
+// Backdrop — only visible on mobile, sits behind the bottom sheet
+.filter-panel-backdrop {
+    display: none;
+
+    @include mobile {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 59;
+        background: rgba(0, 0, 0, 0.35);
+        animation: fadeIn 0.15s ease;
+    }
+}
+
 .filter-panel {
     position: absolute;
     top: calc(100% + 6px);
@@ -14,6 +28,34 @@
     max-height: 80vh;
     animation: fadeIn 0.15s ease;
     @include scrollbar;
+
+    // Mobile — full-width bottom sheet
+    @include mobile {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: 75vh;
+        border-radius: 16px 16px 0 0;
+        border-bottom: none;
+        animation: slideUp 0.2s ease;
+    }
+
+    // Drag handle shown on mobile only
+    &__handle {
+        display: none;
+
+        @include mobile {
+            display: block;
+            width: 36px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 10px auto 4px;
+        }
+    }
 
     section {
         padding: 14px 16px;
@@ -70,4 +112,9 @@
             background: var(--brand-light);
         }
     }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
 }

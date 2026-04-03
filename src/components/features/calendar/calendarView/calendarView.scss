@@ -235,19 +235,11 @@
     @include mobile {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        gap: 6px;
         padding: 6px 10px;
         background: var(--bg-subtle);
         border-bottom: 1px solid var(--border);
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text);
         flex-shrink: 0;
-
-        span {
-            @include truncate;
-            max-width: 200px;
-        }
 
         button {
             display: inline-flex;
@@ -262,10 +254,37 @@
             font-size: 16px;
             font-family: inherit;
             cursor: pointer;
+            flex-shrink: 0;
 
             &:disabled {
                 opacity: 0.3;
             }
+        }
+    }
+}
+
+.mobile-therapist-select {
+    display: none;
+
+    @include mobile {
+        display: block;
+        flex: 1;
+        min-width: 0;
+        height: 40px;
+        padding: 0 8px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        outline: none;
+
+        &:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px var(--brand-light);
         }
     }
 }

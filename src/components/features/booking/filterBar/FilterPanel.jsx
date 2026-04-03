@@ -41,49 +41,57 @@ const FilterPanel = ({ onClose }) => {
     };
 
     return (
-        <div className="filter-panel">
-            <section>
-                <h4>Show by group (Person who is on duty)</h4>
-                {["all", "male", "female"].map((g) => (
-                    <label key={g} className="radio-row">
-                        <input type="radio" name="group" value={g} checked={group === g} onChange={() => setGroup(g)} />
-                        {g === "all" ? "All Therapist" : g.charAt(0).toUpperCase() + g.slice(1)}
-                    </label>
-                ))}
-            </section>
+        <>
+            {/* Backdrop — visible on mobile only, closes panel on tap */}
+            <div className="filter-panel-backdrop" onClick={onClose} />
 
-            <hr />
+            <div className="filter-panel">
+                {/* Drag handle — mobile only visual cue */}
+                <div className="filter-panel__handle" />
 
-            <section>
-                <h4>Resources</h4>
-                {RESOURCES.map((r) => (
-                    <label key={r} className="radio-row">
-                        <input type="radio" name="resource" value={r} checked={resource === r} onChange={() => setResource(r)} />
-                        {r}
-                    </label>
-                ))}
-            </section>
-
-            <hr />
-
-            <section>
-                <h4>Booking Status</h4>
-                <div className="status-grid">
-                    {STATUSES.map(({ id, label }) => (
-                        <label key={id} className="check-row">
-                            <input type="checkbox" checked={statuses.includes(id)} onChange={() => toggleStatus(id)} />
-                            {label}
+                <section>
+                    <h4>Show by group (Person who is on duty)</h4>
+                    {["all", "male", "female"].map((g) => (
+                        <label key={g} className="radio-row">
+                            <input type="radio" name="group" value={g} checked={group === g} onChange={() => setGroup(g)} />
+                            {g === "all" ? "All Therapist" : g.charAt(0).toUpperCase() + g.slice(1)}
                         </label>
                     ))}
-                </div>
-            </section>
+                </section>
 
-            <hr />
+                <hr />
 
-            <button className="clear-btn" onClick={handleClear}>
-                Clear Filter (Return to Default)
-            </button>
-        </div>
+                <section>
+                    <h4>Resources</h4>
+                    {RESOURCES.map((r) => (
+                        <label key={r} className="radio-row">
+                            <input type="radio" name="resource" value={r} checked={resource === r} onChange={() => setResource(r)} />
+                            {r}
+                        </label>
+                    ))}
+                </section>
+
+                <hr />
+
+                <section>
+                    <h4>Booking Status</h4>
+                    <div className="status-grid">
+                        {STATUSES.map(({ id, label }) => (
+                            <label key={id} className="check-row">
+                                <input type="checkbox" checked={statuses.includes(id)} onChange={() => toggleStatus(id)} />
+                                {label}
+                            </label>
+                        ))}
+                    </div>
+                </section>
+
+                <hr />
+
+                <button className="clear-btn" onClick={handleClear}>
+                    Clear Filter (Return to Default)
+                </button>
+            </div>
+        </>
     );
 };
 
