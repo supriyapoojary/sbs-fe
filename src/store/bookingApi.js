@@ -1,12 +1,8 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import baseQuery from "../api/baseQuery";
 import { API } from "../config/api.config";
-import { MOCK_BOOKINGS, MOCK_DATE } from "../api/mockBookings";
-
-const LOAD_TEST = false;
 
 // Data Helpers
-
 const getFirstBookingItem = (booking_item) => {
     if (!booking_item || typeof booking_item !== "object") return {};
     const key = Object.keys(booking_item)[0];
@@ -111,8 +107,7 @@ export const bookingApi = createApi({
         getBookings: builder.query({
             query: (params) => ({ url: API.BOOKING_LIST, params }),
             // Response: { data: { data: { list: { bookings: [...] } } } }
-            transformResponse: (res, _meta, params) => {
-                if (LOAD_TEST && params?.daterange?.startsWith(MOCK_DATE)) return MOCK_BOOKINGS;
+            transformResponse: (res, _meta) => {
                 const bookings = res?.data?.data?.list?.bookings;
                 return Array.isArray(bookings) ? bookings.map(flattenBooking) : [];
             },
