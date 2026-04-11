@@ -109,7 +109,11 @@ const CalendarView = () => {
 
     const apiDate = dayjs(activeDate).format("DD-MM-YYYY");
 
-    const { data: therapistsRaw = [], isLoading: tLoading } = useGetTherapistsQuery({
+    const {
+        data: therapistsRaw = [],
+        isLoading: tLoading,
+        isFetching: tFetching, // true on every date change, not just first load
+    } = useGetTherapistsQuery({
         availability: 1,
         outlet: outletId,
         service_at: `${apiDate} 09:00:00`,
@@ -121,7 +125,11 @@ const CalendarView = () => {
         leave: 0,
     });
 
-    const { data: bookingsRaw = [], isLoading: bLoading } = useGetBookingsQuery({
+    const {
+        data: bookingsRaw = [],
+        isLoading: bLoading,
+        isFetching: bFetching, // true on every date change, not just first load
+    } = useGetBookingsQuery({
         daterange: `${apiDate} / ${apiDate}`,
         outlet: outletId,
         panel: "outlet",
@@ -202,7 +210,9 @@ const CalendarView = () => {
 
     const totalHeight = TOTAL_SLOTS * SLOT_HEIGHT_PX;
 
-    if (bLoading || tLoading)
+    // Show spinner on first load (isLoading) AND on date/outlet change (isFetching)
+    // isFetching catches date navigation — prevents stale previous date data showing
+    if (bLoading || tLoading || bFetching || tFetching)
         return (
             <div className="calendar-loading">
                 <div className="spinner" />
