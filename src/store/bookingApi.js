@@ -41,8 +41,6 @@ export const flattenBooking = (b) => {
     };
 };
 
-// Cache Helpers
-
 // Patches ALL cached getBookings entries across any date.
 // Returns patches array — call patches.forEach(p => p.undo()) on failure.
 const patchAllCaches = (dispatch, getState, patchFn) =>
