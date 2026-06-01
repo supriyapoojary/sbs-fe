@@ -73,7 +73,10 @@ src/
 
 ## Credentials (dev)
 
-```
-Email:    react@hipster-inc.com
-Password: React@123
-```
+## ```
+## Email:    react@hipster-inc.com
+## Password: React@123
+## ```
+
+Email:   admin@spa.com 
+Password:  spa123
