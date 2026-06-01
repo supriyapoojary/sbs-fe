@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import baseQuery from "../api/baseQuery";
 import { API } from "../config/api.config";
-import { MOCK_BOOKINGS } from "../api/mockBookings";
+import { MOCK_BOOKINGS, MOCK_DATE } from "../api/mockBookings";
 import { MOCK_OUTLET_LIST, MOCK_THERAPISTS, MOCK_SERVICES, MOCK_ROOMS, MOCK_USERS } from "../api/mockData";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -78,7 +78,6 @@ export const bookingApi = createApi({
     tagTypes: ["Booking"],
 
     endpoints: (builder) => ({
-
         // ── Queries ─────────────────────────────────────────────────────────────
 
         getOutlets: builder.query({
@@ -90,7 +89,17 @@ export const bookingApi = createApi({
         }),
 
         getBookings: builder.query({
-            queryFn: () => ({ data: MOCK_BOOKINGS }),
+            // Dynamically remaps all bookings to the requested date so mock data
+            // appears on whatever date the calendar is viewing (today, past, future).
+            // params.daterange is "DD-MM-YYYY" or "DD-MM-YYYY,DD-MM-YYYY"
+            queryFn: (params) => {
+                const requestedDate = params?.daterange?.split(",")[0] || MOCK_DATE;
+                const bookings = MOCK_BOOKINGS.map((b) => ({
+                    ...b,
+                    service_date: requestedDate,
+                }));
+                return { data: bookings };
+            },
             providesTags: ["Booking"],
         }),
 
@@ -143,9 +152,7 @@ export const bookingApi = createApi({
                     const date = fd.get("service_at")?.split(" ")[0];
                     bookingApi.util
                         .selectInvalidatedBy(getState(), [{ type: "Booking" }])
-                        .filter(({ endpointName, originalArgs }) =>
-                            endpointName === "getBookings" && originalArgs?.daterange?.startsWith(date)
-                        )
+                        .filter(({ endpointName, originalArgs }) => endpointName === "getBookings" && originalArgs?.daterange?.startsWith(date))
                         .forEach(({ originalArgs }) =>
                             dispatch(
                                 bookingApi.util.updateQueryData("getBookings", originalArgs, (d) => {
@@ -284,16 +291,7 @@ export const {
 //            and restore original onQueryStarted logic
 // ─────────────────────────────────────────────────────────────────────────────
 
-
-
-
-
-
-
-
-
 //Actual API integration - Uncomment and replace HARDCODED_CREDENTIALS with real API calls when backend is ready
-
 
 // import { createApi } from "@reduxjs/toolkit/query/react";
 // import baseQuery from "../api/baseQuery";

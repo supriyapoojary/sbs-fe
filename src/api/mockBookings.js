@@ -8,7 +8,7 @@
 //   const MOCK_DATE_OVERRIDE = null;            // use today
 //
 // const MOCK_DATE_OVERRIDE = "03-04-2026"; //null - current date, for specific date: "03-04-2026";
-const MOCK_DATE_OVERRIDE = "29-05-2026";
+const MOCK_DATE_OVERRIDE = null;
 
 const _today = new Date();
 const _pad = (n) => String(n).padStart(2, "0");
