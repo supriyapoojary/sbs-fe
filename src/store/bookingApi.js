@@ -78,6 +78,7 @@ export const bookingApi = createApi({
     tagTypes: ["Booking"],
 
     endpoints: (builder) => ({
+
         // ── Queries ─────────────────────────────────────────────────────────────
 
         getOutlets: builder.query({
@@ -142,7 +143,9 @@ export const bookingApi = createApi({
                     const date = fd.get("service_at")?.split(" ")[0];
                     bookingApi.util
                         .selectInvalidatedBy(getState(), [{ type: "Booking" }])
-                        .filter(({ endpointName, originalArgs }) => endpointName === "getBookings" && originalArgs?.daterange?.startsWith(date))
+                        .filter(({ endpointName, originalArgs }) =>
+                            endpointName === "getBookings" && originalArgs?.daterange?.startsWith(date)
+                        )
                         .forEach(({ originalArgs }) =>
                             dispatch(
                                 bookingApi.util.updateQueryData("getBookings", originalArgs, (d) => {
@@ -281,7 +284,16 @@ export const {
 //            and restore original onQueryStarted logic
 // ─────────────────────────────────────────────────────────────────────────────
 
+
+
+
+
+
+
+
+
 //Actual API integration - Uncomment and replace HARDCODED_CREDENTIALS with real API calls when backend is ready
+
 
 // import { createApi } from "@reduxjs/toolkit/query/react";
 // import baseQuery from "../api/baseQuery";
