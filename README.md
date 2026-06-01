@@ -73,10 +73,17 @@ src/
 
 ## Credentials (dev)
 
+## with mockData
+
+```
+Email:   admin@spa.com 
+Password:  spa123
+```
+
+
+# with real time API
 ## ```
 ## Email:    react@hipster-inc.com
 ## Password: React@123
 ## ```
 
-Email:   admin@spa.com 
-Password:  spa123
