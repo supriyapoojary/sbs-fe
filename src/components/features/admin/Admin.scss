@@ -1,0 +1,73 @@
+@use "../../../styles/mixins" as *;
+
+.admin-page {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 24px;
+    background: var(--bg-muted);
+
+    @include mobile {
+        align-items: flex-start;
+        padding: 24px 16px;
+    }
+}
+
+.admin-card {
+    width: 100%;
+    max-width: 560px;
+    // background: var(--bg);
+    // border: 1px solid var(--border);
+    // border-radius: 12px;
+    padding: 36px;
+    // box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    @include mobile {
+        padding: 24px 20px;
+    }
+
+    h1 {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    p {
+        font-size: 14px;
+        color: var(--text-sub);
+        line-height: 1.6;
+    }
+    strong {
+        color: var(--text);
+        font-weight: 600;
+    }
+}
+
+.placeholder {
+    padding: 36px 24px;
+    // background: var(--bg-subtle);
+    border: 1px dashed var(--border-strong);
+    // border-radius: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    .icon {
+        font-size: 36px;
+    }
+    .heading {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+    }
+    .sub {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+}

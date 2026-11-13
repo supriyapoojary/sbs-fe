@@ -1,0 +1,53 @@
+@use "../../../styles/mixins" as *;
+
+.not-found {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-muted);
+    padding: 24px;
+
+    .card {
+        text-align: center;
+        max-width: 420px;
+    }
+
+    .code {
+        font-size: 96px;
+        font-weight: 800;
+        color: var(--border-strong);
+        line-height: 1;
+        margin-bottom: 16px;
+        letter-spacing: -4px;
+    }
+
+    h1 {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 14px;
+        color: var(--text-sub);
+        line-height: 1.6;
+        margin-bottom: 24px;
+    }
+
+    .auth-hint {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    // Uses global .btn .btn-primary .btn-lg from global.scss
+}

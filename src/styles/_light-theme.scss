@@ -1,0 +1,57 @@
+[data-theme="light"] {
+    // Brand
+    --brand: rgba(60, 34, 18, 1);
+    --brand-hover: rgba(80, 50, 28, 1);
+    --brand-light: rgba(60, 34, 18, 0.08);
+
+    // Backgrounds
+    --bg: #ffffff;
+    --bg-subtle: #efefef;
+    --bg-muted: #f1f3f5;
+    --overlay: rgba(0, 0, 0, 0.4);
+
+    // Text
+    --text: #1a1a2e;
+    --text-sub: #495057;
+    --text-muted: #868e96;
+    --text-on-brand: #ffffff;
+
+    // Border
+    --border: #e9ecef;
+    --border-strong: #ced4da;
+    --border-15min: #f0f0f0;
+
+    // Status
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+
+    // Booking blocks
+    --block-blue: #dbeafe;
+    --block-blue-bd: #3b82f6;
+    --block-pink: #fce7f3;
+    --block-pink-bd: #ec4899;
+    --block-green: #dcfce7;
+    --block-green-bd: #22c55e;
+    --block-yellow: #fef9c3;
+    --block-yellow-bd: #eab308;
+    --block-amber: #fef3c7;
+    --block-amber-bd: #f59e0b;
+
+    // Therapist gender
+    --female: #ec4899;
+    --male: #3b82f6;
+
+    // Calendar
+    --slot-hover: #f8f9fa;
+
+    // Panel
+    --panel-width: 380px;
+    --panel-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+
+    // Shadows
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+}

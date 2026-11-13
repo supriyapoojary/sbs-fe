@@ -1,0 +1,15 @@
+export const API = {
+    LOGIN: "/api/v1/login",
+    THERAPISTS: "/api/v1/therapists",
+    SERVICE_CATEGORY: "/api/v1/service-category",
+    BOOKING_LIST: "/api/v1/bookings/outlet/booking/list",
+    BOOKING_DETAILS: (id) => `/api/v1/bookings/booking-details/${id}`,
+    CREATE_BOOKING: "/api/v1/bookings/create",
+    UPDATE_BOOKING: (id) => `/api/v1/bookings/${id}`,
+    CANCEL_BOOKING: "/api/v1/bookings/item/cancel",
+    DELETE_BOOKING: (id) => `/api/v1/bookings/destroy/${id}`,
+    ROOM_BOOKINGS: "/api/v1/room-bookings",
+    OUTLET_TIMINGS: "/api/v1/outlet-timings",
+    USERS: "/api/v1/users",
+    UPDATE_BOOKING_STATUS: "/api/v1/bookings/update/payment-status",
+};

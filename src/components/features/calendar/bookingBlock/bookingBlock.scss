@@ -1,0 +1,123 @@
+@use "../../../../styles/mixins" as *;
+
+.booking-block {
+    position: absolute;
+    left: 2px;
+    right: 10%;
+    border-left: 3px solid;
+    border-radius: 4px;
+    padding: 4px 5px;
+    overflow: hidden;
+    z-index: 2;
+    box-sizing: border-box;
+    transition:
+        filter 0.1s,
+        transform 0.1s;
+
+    &:hover {
+        filter: brightness(0.95);
+        transform: scale(1.01);
+        z-index: 3;
+    }
+    &:active {
+        cursor: grabbing;
+    }
+
+    &.small {
+        padding: 2px 5px;
+        display: flex;
+        align-items: center;
+    }
+
+    &.status-cancelled {
+        opacity: 0.65;
+        .service,
+        .phone,
+        .name {
+            text-decoration: line-through;
+        }
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .service {
+        font-size: 11px;
+        font-weight: 600;
+        color: #1a1a2e;
+        line-height: 1.3;
+        flex-shrink: 0;
+        @include truncate;
+    }
+
+    .client {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        margin-top: 2px;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .phone,
+    .name {
+        font-size: 11px;
+        font-weight: 700;
+        color: #1a1a2e;
+        line-height: 1.2;
+        @include truncate;
+    }
+
+    .in-progress {
+        font-size: 10px;
+        color: #92400e;
+        font-style: italic;
+    }
+
+    .icons {
+        display: flex;
+        gap: 3px;
+        margin-top: auto;
+        padding-top: 3px;
+        flex-wrap: wrap;
+        align-self: flex-start;
+    }
+
+    .icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        font-size: 9px;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+
+        &--confirmed {
+            background: #16a34a;
+        }
+        &--completed {
+            background: #2563eb;
+        }
+        &--cancelled {
+            background: #dc2626;
+        }
+        &--in_progress {
+            background: #f59e0b;
+        }
+        &--source {
+            background: #0891b2;
+        }
+        &--room {
+            background: #7c3aed;
+        }
+        &--note {
+            background: #6b7280;
+        }
+    }
+}

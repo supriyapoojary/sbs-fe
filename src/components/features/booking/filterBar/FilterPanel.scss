@@ -1,0 +1,124 @@
+@use "../../../../styles/mixins" as *;
+
+// Backdrop — only visible on mobile, sits behind the bottom sheet
+.filter-panel-backdrop {
+    display: none;
+
+    @include mobile {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 59;
+        background: rgba(0, 0, 0, 0.35);
+        animation: fadeIn 0.15s ease;
+    }
+}
+
+.filter-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 280px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    z-index: 60;
+    overflow-y: auto;
+    max-height: 80vh;
+    animation: fadeIn 0.15s ease;
+    @include scrollbar;
+
+    // Mobile — full-width bottom sheet
+    @include mobile {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: 75vh;
+        border-radius: 16px 16px 0 0;
+        border-bottom: none;
+        animation: slideUp 0.2s ease;
+    }
+
+    // Drag handle shown on mobile only
+    &__handle {
+        display: none;
+
+        @include mobile {
+            display: block;
+            width: 36px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 10px auto 4px;
+        }
+    }
+
+    section {
+        padding: 14px 16px;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--border);
+    }
+
+    h4 {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-sub);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 10px;
+    }
+
+    .radio-row,
+    .check-row {
+        @include flex-start;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text);
+        cursor: pointer;
+        padding: 3px 0;
+        input {
+            accent-color: var(--brand);
+            cursor: pointer;
+        }
+    }
+
+    .status-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 8px;
+    }
+
+    .clear-btn {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        background: none;
+        border: none;
+        border-top: 1px solid var(--border);
+        color: var(--brand);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        text-align: left;
+        &:hover {
+            background: var(--brand-light);
+        }
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
